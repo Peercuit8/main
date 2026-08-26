@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FileText,
   UserCheck,
@@ -10,6 +10,8 @@ import {
   ArrowRight,
   Cpu,
   CheckCircle2,
+  Sparkles,
+  Zap,
 } from "lucide-react";
 
 const STEPS = [
@@ -61,7 +63,7 @@ export function HowItWorks() {
   const [activeStep, setActiveStep] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Smooth natural scroll spy
+  // Track scroll through the 260vh pinned container
   useEffect(() => {
     const handleScroll = () => {
       if (!containerRef.current) return;
@@ -74,6 +76,7 @@ export function HowItWorks() {
       const currentScroll = -rect.top;
       const progress = Math.max(0, Math.min(1, currentScroll / totalScrollable));
 
+      // Map progress to 3 steps (0, 1, 2)
       const index = Math.min(2, Math.floor(progress * 3));
       setActiveStep(index);
     };
@@ -84,125 +87,139 @@ export function HowItWorks() {
   }, []);
 
   return (
-    <section ref={containerRef} id="how-it-works" className="py-24 relative overflow-hidden">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300/80 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-3 shadow-xs">
-            <Cpu className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400" />
-            3-Step Process
+    <section ref={containerRef} id="how-it-works" className="relative min-h-[260vh] py-12">
+      {/* Sticky viewport that stays in place while user scrolls through the 3 steps */}
+      <div className="sticky top-20 min-h-[85vh] flex flex-col justify-center overflow-hidden py-4">
+        {/* Ambient Neon Lighting */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] radial-glow-emerald opacity-50 pointer-events-none -z-10" />
+
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          {/* Header */}
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300/80 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-2.5 shadow-xs">
+              <Cpu className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400 animate-pulse" />
+              Scroll-Driven Onboarding
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+              How to join <span className="gradient-text-primary">Peercuit</span>
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-2">
+              Scroll through the 3 simple steps to find your circle.
+            </p>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
-            How to join <span className="gradient-text-primary">Peercuit</span>
-          </h2>
-          <p className="text-base text-slate-600 dark:text-slate-300 mt-2">
-            From application to your first community demo in 3 simple steps.
-          </p>
-        </div>
 
-        {/* Connected Step Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-          {STEPS.map((item, idx) => {
-            const isActive = activeStep === idx;
-            const Icon = item.icon;
+          {/* Connected Step Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+            {STEPS.map((item, idx) => {
+              const isActive = activeStep === idx;
+              const isPast = activeStep > idx;
+              const Icon = item.icon;
 
-            return (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.4, delay: idx * 0.12 }}
-                onClick={() => setActiveStep(idx)}
-                className={`glass-card rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 cursor-pointer relative overflow-hidden ${
-                  isActive
-                    ? "border-2 border-emerald-500 shadow-2xl shadow-emerald-950/20 scale-[1.02]"
-                    : "border border-emerald-900/10 dark:border-emerald-500/15 opacity-80 hover:opacity-100 hover:border-emerald-400"
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span
-                      className={`text-3xl font-black font-mono transition-colors ${
+              return (
+                <div
+                  key={idx}
+                  onClick={() => setActiveStep(idx)}
+                  className={`glass-card rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 cursor-pointer relative overflow-hidden ${
+                    isActive
+                      ? "border-2 border-emerald-500 shadow-2xl shadow-emerald-950/20 scale-[1.03]"
+                      : isPast
+                      ? "border border-emerald-400/50 opacity-80"
+                      : "border border-emerald-900/10 dark:border-emerald-500/15 opacity-60 hover:opacity-90"
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span
+                        className={`text-3xl font-black font-mono transition-colors ${
+                          isActive
+                            ? "text-[#0d623d] dark:text-emerald-400"
+                            : "text-slate-300 dark:text-emerald-900/60"
+                        }`}
+                      >
+                        {item.step}
+                      </span>
+                      <span
+                        className={`text-[11px] font-bold px-2.5 py-1 rounded-full border transition-colors ${
+                          isActive
+                            ? "bg-[#0d623d] text-white border-[#0d623d] dark:bg-emerald-500 dark:border-emerald-400"
+                            : "bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/20"
+                        }`}
+                      >
+                        {item.badge}
+                      </span>
+                    </div>
+
+                    <div
+                      className={`w-12 h-12 rounded-2xl border flex items-center justify-center mb-4 transition-all shadow-xs ${
                         isActive
-                          ? "text-[#0d623d] dark:text-emerald-400"
-                          : "text-slate-300 dark:text-emerald-900/60"
+                          ? "bg-gradient-to-br from-[#0d623d] to-emerald-600 text-white shadow-lg shadow-emerald-600/30 border-emerald-400"
+                          : "bg-emerald-100 dark:bg-emerald-950/80 border-emerald-300 dark:border-emerald-500/30 text-[#0d623d] dark:text-emerald-400"
                       }`}
                     >
-                      {item.step}
-                    </span>
-                    <span
-                      className={`text-[11px] font-bold px-2.5 py-1 rounded-full border transition-colors ${
-                        isActive
-                          ? "bg-[#0d623d] text-white border-[#0d623d] dark:bg-emerald-500 dark:border-emerald-400"
-                          : "bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/20"
-                      }`}
-                    >
-                      {item.badge}
-                    </span>
+                      <Icon className="w-6 h-6" />
+                    </div>
+
+                    <h3 className="text-xl font-black text-slate-900 dark:text-white mb-1">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs font-semibold text-[#0d623d] dark:text-emerald-400 mb-2">
+                      {item.tagline}
+                    </p>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
+                      {item.description}
+                    </p>
                   </div>
 
-                  <div
-                    className={`w-12 h-12 rounded-2xl border flex items-center justify-center mb-4 transition-all ${
-                      isActive
-                        ? "bg-gradient-to-br from-[#0d623d] to-emerald-600 text-white shadow-lg shadow-emerald-600/30 border-emerald-400"
-                        : "bg-emerald-100 dark:bg-emerald-950/80 border-emerald-300 dark:border-emerald-500/30 text-[#0d623d] dark:text-emerald-400"
-                    }`}
-                  >
-                    <Icon className="w-6 h-6" />
+                  {/* Micro Mockup */}
+                  <div className="p-3.5 rounded-xl bg-white/90 dark:bg-[#07130c]/90 border border-emerald-300/60 dark:border-emerald-500/15 text-xs text-slate-700 dark:text-slate-300 space-y-1.5 shadow-xs">
+                    <p className="font-bold text-[11px] text-slate-900 dark:text-white pb-1 border-b border-emerald-500/10">
+                      {item.mock.title}
+                    </p>
+                    {item.mock.fields?.map((f, i) => (
+                      <div key={i} className="flex items-center gap-1.5 text-[11px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#0d623d] dark:bg-emerald-400" />
+                        <span>{f}</span>
+                      </div>
+                    ))}
+                    {item.mock.items?.map((it, i) => (
+                      <div key={i} className="flex items-center gap-1.5 text-[11px]">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400" />
+                        <span>{it}</span>
+                      </div>
+                    ))}
+                    {item.mock.channels?.map((ch, i) => (
+                      <span
+                        key={i}
+                        className="inline-block mr-1 text-[10px] bg-emerald-50 dark:bg-[#0c1a11] px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/20 font-mono text-emerald-800 dark:text-emerald-300 font-semibold"
+                      >
+                        {ch}
+                      </span>
+                    ))}
                   </div>
 
-                  <h3 className="text-xl font-black text-slate-900 dark:text-white mb-1">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs font-semibold text-[#0d623d] dark:text-emerald-400 mb-2">
-                    {item.tagline}
-                  </p>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-                    {item.description}
-                  </p>
+                  {/* Active Indicator Top Glow */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="active-howitworks-bar"
+                      className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#0d623d] via-emerald-400 to-[#16a34a]"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
                 </div>
+              );
+            })}
+          </div>
 
-                {/* Micro Mockup */}
-                <div className="p-3.5 rounded-xl bg-white/90 dark:bg-[#07130c]/90 border border-emerald-300/60 dark:border-emerald-500/15 text-xs text-slate-700 dark:text-slate-300 space-y-1.5 shadow-xs">
-                  <p className="font-bold text-[11px] text-slate-900 dark:text-white pb-1 border-b border-emerald-500/10">
-                    {item.mock.title}
-                  </p>
-                  {item.mock.fields?.map((f, i) => (
-                    <div key={i} className="flex items-center gap-1.5 text-[11px]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#0d623d] dark:bg-emerald-400" />
-                      <span>{f}</span>
-                    </div>
-                  ))}
-                  {item.mock.items?.map((it, i) => (
-                    <div key={i} className="flex items-center gap-1.5 text-[11px]">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400" />
-                      <span>{it}</span>
-                    </div>
-                  ))}
-                  {item.mock.channels?.map((ch, i) => (
-                    <span
-                      key={i}
-                      className="inline-block mr-1 text-[10px] bg-emerald-50 dark:bg-[#0c1a11] px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/20 font-mono text-emerald-800 dark:text-emerald-300 font-semibold"
-                    >
-                      {ch}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Bottom Action */}
-        <div className="mt-14 text-center">
-          <Link
-            href="/apply"
-            className="inline-flex items-center gap-2 px-8 py-4 text-base font-bold text-white bg-[#0d623d] hover:bg-[#094d2f] dark:bg-emerald-600 dark:hover:bg-emerald-500 rounded-xl shadow-xl shadow-emerald-900/15 dark:shadow-emerald-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
-          >
-            Ready to find your circle? Apply in 2 mins
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          {/* Bottom Action */}
+          <div className="mt-10 text-center">
+            <Link
+              href="/apply"
+              className="inline-flex items-center gap-2 px-8 py-4 text-base font-bold text-white bg-[#0d623d] hover:bg-[#094d2f] dark:bg-emerald-600 dark:hover:bg-emerald-500 rounded-xl shadow-xl shadow-emerald-900/15 dark:shadow-emerald-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+              Ready to find your circle? Apply in 2 mins
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </div>
     </section>

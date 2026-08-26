@@ -9,7 +9,6 @@ import {
   Flame,
   Sparkles,
   Zap,
-  Terminal,
   Activity,
   Code2,
   Users,
@@ -90,7 +89,7 @@ export function Hero() {
             </Link>
           </motion.div>
 
-          {/* Community Stream Hub */}
+          {/* Community Activity Hub */}
           <motion.div
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
@@ -103,12 +102,12 @@ export function Hero() {
                 <div className="w-3 h-3 rounded-full bg-amber-500/80" />
                 <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
                 <span className="text-xs font-mono text-slate-700 dark:text-emerald-400/90 ml-2 font-bold">
-                  peercuit-circle &bull; live community activity
+                  peercuit-circle &bull; community activity
                 </span>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-[#0d623d] dark:text-emerald-400 font-mono font-bold bg-emerald-100 dark:bg-emerald-950/80 px-2.5 py-1 rounded-md border border-emerald-200 dark:border-emerald-500/20">
                 <span className="w-2 h-2 rounded-full bg-[#0d623d] dark:bg-emerald-400 animate-pulse" />
-                <span>68 student builders active</span>
+                <span>Curated WhatsApp Circles</span>
               </div>
             </div>
 

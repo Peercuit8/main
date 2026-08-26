@@ -9,11 +9,8 @@ import {
   CalendarCheck,
   Check,
   Zap,
-  Sparkles,
   Terminal,
-  ArrowRight,
   Flame,
-  Layers,
   Radio,
 } from "lucide-react";
 
@@ -33,11 +30,9 @@ const BENEFITS = [
     ],
     preview: {
       type: "code",
-      title: "auth/session.ts — Code Review",
-      badge: "#roast-my-code",
-      snippet: "// Suggested refactor by Alex (Grade 12)\n- const token = localStorage.getItem('jwt');\n+ const { session } = await supabase.auth.getSession();\n// Fixes SSR hydration mismatch & token leak",
-      author: "Alex R. (Grade 12)",
-      status: "3 comments resolved",
+      title: "auth/session.ts — Code Review Thread",
+      badge: "Constructive Critique",
+      snippet: "// Suggested architecture refactor\n- const token = localStorage.getItem('jwt');\n+ const { session } = await supabase.auth.getSession();\n// Resolves SSR hydration mismatch & secure token handling",
     },
   },
   {
@@ -47,7 +42,7 @@ const BENEFITS = [
     title: "Meet like-minded students",
     tagline: "Find peers who share your specific obsessions.",
     description:
-      "Most schools have only 2 or 3 people who share your passion for shipping. Peercuit connects you with curious, self-starter peers across 40+ schools and colleges worldwide who love building cool stuff.",
+      "Most schools have only a handful of people who share your passion for shipping. Peercuit connects you with curious, self-starter peers across high schools and colleges who love building cool stuff.",
     highlights: [
       "Find hackathon & project co-builders",
       "High school & college level collaboration",
@@ -55,14 +50,14 @@ const BENEFITS = [
     ],
     preview: {
       type: "network",
-      title: "Active Student Co-builders",
-      badge: "Cross-Campus Network",
-      peers: [
-        { name: "Maya Lin", school: "UC Berkeley", role: "Rust & Next.js", status: "Looking for UI designer" },
-        { name: "Dev Patel", school: "Delhi Public School", role: "Figma & React", status: "Building mobile app" },
-        { name: "Sarah Z.", school: "Univ. of Waterloo", role: "AI & PyTorch", status: "Prepping for HackMIT" },
+      title: "Skill-Based Teammate Matching",
+      badge: "Co-Builder Hub",
+      roles: [
+        { title: "Full-Stack Devs", stack: "Next.js, TypeScript, Supabase", focus: "Building web apps & SaaS" },
+        { title: "AI & ML Builders", stack: "Python, PyTorch, LangChain", focus: "Agents & automation models" },
+        { title: "UI/UX Designers", stack: "Figma, Tailwind, Prototyping", focus: "Design systems & wireframes" },
       ],
-      status: "14 co-build projects formed this month",
+      status: "Matched by complementary skills",
     },
   },
   {
@@ -80,11 +75,11 @@ const BENEFITS = [
     ],
     preview: {
       type: "bounty",
-      title: "Student Bounty Radar",
+      title: "Student Opportunity Radar",
       badge: "Verified Comp",
-      event: "HackMIT 2026 & AI Track",
-      prize: "$25,000 in student bounties",
-      status: "4 Peercuit teams competing",
+      event: "Global Student Hackathons & AI Tracks",
+      prize: "Grants, cash prizes & builder bounties",
+      status: "Curated student competitions",
     },
   },
   {
@@ -104,9 +99,9 @@ const BENEFITS = [
       type: "demo",
       title: "Sunday Demo Night",
       badge: "Live Audio & Screen Share",
-      time: "8:00 PM EST / 5:30 AM IST",
-      demos: "6 student lightning demos scheduled",
-      status: "Screen-shares & honest Q&A",
+      time: "Every Sunday 8:00 PM EST / 5:30 AM IST",
+      demos: "Live lightning demos and open Q&A",
+      status: "Weekly progress celebration",
     },
   },
 ];
@@ -153,7 +148,7 @@ export function ValueProps() {
             <div>
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300/80 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-2.5 shadow-xs">
                 <Zap className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400 animate-pulse" />
-                Interactive Feature Deck
+                Community Benefits
               </div>
               <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
                 Everything you need to <span className="gradient-text-primary">level up together</span>.
@@ -308,14 +303,14 @@ export function ValueProps() {
                             </span>
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                            {activeItem.preview.peers?.map((peer, pIdx) => (
+                            {activeItem.preview.roles?.map((role, rIdx) => (
                               <div
-                                key={pIdx}
+                                key={rIdx}
                                 className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#08160d] border border-emerald-300/60 dark:border-emerald-500/20 text-xs shadow-xs"
                               >
-                                <p className="font-bold text-slate-900 dark:text-white">{peer.name}</p>
-                                <p className="text-[11px] text-slate-500 dark:text-slate-400">{peer.school}</p>
-                                <p className="text-[10px] font-bold text-[#0d623d] dark:text-emerald-400 mt-1">{peer.role}</p>
+                                <p className="font-bold text-slate-900 dark:text-white">{role.title}</p>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400">{role.stack}</p>
+                                <p className="text-[10px] font-bold text-[#0d623d] dark:text-emerald-400 mt-1">{role.focus}</p>
                               </div>
                             ))}
                           </div>
