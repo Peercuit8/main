@@ -12,7 +12,7 @@ import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50/60 via-transparent to-emerald-50/40 dark:from-[#07130c]/70 dark:via-transparent dark:to-[#08160f]/80 text-slate-900 dark:text-slate-100 flex flex-col selection:bg-[#0d623d] selection:text-white dark:selection:bg-emerald-500 transition-colors duration-200">
+    <div className="min-h-screen bg-transparent text-slate-900 dark:text-slate-100 flex flex-col selection:bg-[#0d623d] selection:text-white dark:selection:bg-emerald-500 transition-colors duration-200">
       <Navbar />
 
       <main className="flex-grow">
@@ -34,11 +34,11 @@ export default function Home() {
         {/* 6. Mid-Page Big CTA Section */}
         <section className="py-20 relative overflow-hidden">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative rounded-3xl p-8 sm:p-12 md:p-16 bg-gradient-to-br from-emerald-100/90 via-emerald-50/70 to-emerald-100/80 dark:bg-gradient-to-r dark:from-emerald-950/80 dark:via-[#07130c]/90 dark:to-emerald-950/80 border border-emerald-200/80 dark:border-emerald-500/30 shadow-xl overflow-hidden text-center">
+            <div className="relative rounded-3xl p-8 sm:p-12 md:p-16 glass-card border border-emerald-300/80 dark:border-emerald-500/30 shadow-2xl overflow-hidden text-center">
               <div className="absolute top-0 right-0 w-72 h-72 radial-glow-emerald opacity-50 pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-72 h-72 radial-glow-green opacity-40 pointer-events-none" />
 
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-200/70 dark:bg-emerald-500/20 text-emerald-900 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-5 border border-emerald-300 dark:border-emerald-500/30">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-500/15 text-emerald-900 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-5 border border-emerald-300 dark:border-emerald-500/30">
                 <Cpu className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400" />
                 Applications Open for Cohort 4
               </div>
@@ -61,7 +61,7 @@ export default function Home() {
                 </Link>
                 <Link
                   href="#faq"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-white/90 hover:bg-white dark:bg-emerald-950/50 dark:hover:bg-emerald-950/80 border border-emerald-200/80 dark:border-emerald-500/25 rounded-xl transition-all shadow-xs"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white glass-card border border-emerald-300/60 dark:border-emerald-500/25 rounded-xl transition-all shadow-xs"
                 >
                   Read Student FAQs
                 </Link>

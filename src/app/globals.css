@@ -5,14 +5,15 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
+  min-height: 100%;
 }
 
 /* Light Mode Defaults */
 :root {
-  --bg-primary: #f6fbf7;
-  --bg-secondary: #edf7ef;
-  --bg-surface: #e5f3e8;
-  --bg-card: rgba(255, 255, 255, 0.85);
+  --bg-primary: #edf8f0;
+  --bg-secondary: #e4f3e8;
+  --bg-surface: #daf0e0;
+  --bg-card: rgba(255, 255, 255, 0.88);
   --border-subtle: rgba(13, 98, 61, 0.12);
   --border-card: rgba(13, 98, 61, 0.12);
   --border-card-hover: rgba(13, 98, 61, 0.35);
@@ -30,12 +31,12 @@ html {
 
 /* Dark Mode Dedicated Palette */
 .dark {
-  --bg-primary: #050806;
-  --bg-secondary: #0a110d;
-  --bg-surface: #0e1913;
-  --bg-card: rgba(10, 18, 14, 0.8);
+  --bg-primary: #050d08;
+  --bg-secondary: #07140c;
+  --bg-surface: #0a1b10;
+  --bg-card: rgba(8, 18, 12, 0.85);
   --border-subtle: rgba(16, 185, 129, 0.15);
-  --border-card: rgba(16, 185, 129, 0.12);
+  --border-card: rgba(16, 185, 129, 0.14);
   --border-card-hover: rgba(52, 211, 153, 0.4);
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
@@ -49,11 +50,10 @@ html {
   --brand-badge-border: rgba(16, 185, 129, 0.25);
 }
 
+/* Constant Unified Background Gradient Across Entire Site */
 body {
   background-color: var(--bg-primary);
-  background-image: 
-    radial-gradient(circle 800px at 50% 0px, rgba(16, 185, 129, 0.09), transparent 70%),
-    linear-gradient(180deg, #edf8f0 0%, #f6fcf8 25%, #ffffff 55%, #f1f9f3 100%);
+  background-image: linear-gradient(150deg, #f2fbf5 0%, #eaf7ee 45%, #e1f3e7 100%);
   background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -64,10 +64,7 @@ body {
 
 .dark body {
   background-color: var(--bg-primary);
-  background-image: 
-    radial-gradient(circle 800px at 50% 0px, rgba(16, 185, 129, 0.16), transparent 70%),
-    radial-gradient(circle 500px at 80% 60%, rgba(5, 150, 105, 0.12), transparent 70%),
-    linear-gradient(180deg, #07130c 0%, #050806 35%, #08160f 100%);
+  background-image: linear-gradient(150deg, #050d08 0%, #07150d 45%, #040a06 100%);
   background-attachment: fixed;
 }
 
@@ -87,19 +84,19 @@ body {
 
 /* Radial Glows */
 .radial-glow-emerald {
-  background: radial-gradient(circle 550px at 50% 10%, rgba(13, 98, 61, 0.14), transparent 70%);
+  background: radial-gradient(circle 550px at 50% 10%, rgba(13, 98, 61, 0.12), transparent 70%);
 }
 
 .dark .radial-glow-emerald {
-  background: radial-gradient(circle 550px at 50% 10%, rgba(16, 185, 129, 0.18), transparent 70%);
+  background: radial-gradient(circle 550px at 50% 10%, rgba(16, 185, 129, 0.16), transparent 70%);
 }
 
 .radial-glow-green {
-  background: radial-gradient(circle 400px at 80% 60%, rgba(22, 163, 74, 0.12), transparent 70%);
+  background: radial-gradient(circle 400px at 80% 60%, rgba(22, 163, 74, 0.1), transparent 70%);
 }
 
 .dark .radial-glow-green {
-  background: radial-gradient(circle 400px at 80% 60%, rgba(5, 150, 105, 0.15), transparent 70%);
+  background: radial-gradient(circle 400px at 80% 60%, rgba(5, 150, 105, 0.12), transparent 70%);
 }
 
 /* Card components */
@@ -112,7 +109,7 @@ body {
 }
 
 .dark .glass-card {
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
 }
 
 .glass-card-hover {

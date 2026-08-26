@@ -23,9 +23,9 @@ export function Footer() {
   };
 
   return (
-    <footer className="border-t border-slate-200 dark:border-emerald-500/[0.12] bg-slate-50 dark:bg-[#040605] pt-16 pb-12 text-slate-600 dark:text-slate-400 text-sm transition-colors">
+    <footer className="border-t border-emerald-950/10 dark:border-emerald-500/[0.12] bg-black/[0.015] dark:bg-black/25 pt-16 pb-12 text-slate-600 dark:text-slate-400 text-sm transition-colors backdrop-blur-xs">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-slate-200 dark:border-emerald-500/[0.08]">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-emerald-950/10 dark:border-emerald-500/[0.08]">
           {/* Brand Col with Actual Logo */}
           <div className="md:col-span-2 space-y-4">
             <Link href="/" className="inline-block group">
