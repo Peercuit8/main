@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Linkedin } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 
 const FOUNDERS = [
@@ -69,7 +69,7 @@ export function Founders() {
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
               >
-                <Linkedin className="w-4 h-4" />
+                <ExternalLink className="w-4 h-4" />
                 Connect on LinkedIn
               </a>
             </motion.div>

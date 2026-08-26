@@ -162,56 +162,6 @@ const BENEFITS = [
   },
 ];
 
-export function ValueProps() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Smooth scroll spy on desktop viewports
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return;
-      if (window.innerWidth < 1024) return; // Only enable scroll spy on desktop
-
-      const rect = containerRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      
-      const totalScrollable = rect.height - windowHeight;
-      if (totalScrollable <= 0) return;
-
-      const currentScroll = -rect.top;
-      const progress = Math.max(0, Math.min(1, currentScroll / totalScrollable));
-
-      const index = Math.min(BENEFITS.length - 1, Math.floor(progress * BENEFITS.length));
-      setActiveIndex(index);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const activeItem = BENEFITS[activeIndex];
-  const ActiveIcon = activeItem.icon;
-
-  return (
-    <section ref={containerRef} id="benefits" className="relative py-12 lg:py-16 lg:min-h-[320vh]">
-      {/* Sticky viewport on desktop / standard fluid on mobile */}
-      <div className="lg:sticky lg:top-20 lg:min-h-[85vh] flex flex-col justify-center overflow-hidden py-2 sm:py-4">
-        {/* Ambient Neon Lighting */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] radial-glow-emerald opacity-60 pointer-events-none -z-10" />
-
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          {/* Header */}
-          <div className="mb-6 sm:mb-8 text-center sm:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300/80 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-2.5 shadow-xs">
-              <Zap className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400 animate-pulse" />
-              What We Do in Peercuit
-            </div>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
-              Everything you need to <span className="gradient-text-primary">level up together</span>.
-            </h2>
-          </div>
-
 function PreviewCard({ item }: { item: any }) {
   const Icon = item.icon;
   return (
