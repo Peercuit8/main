@@ -13,7 +13,7 @@ export const metadata = {
 
 export default function ApplyPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-[#0d623d] selection:text-white dark:selection:bg-emerald-500 transition-colors duration-200">
+    <div className="min-h-screen bg-gradient-to-b from-emerald-50/60 via-transparent to-emerald-50/40 dark:from-[#07130c]/70 dark:via-transparent dark:to-[#08160f]/80 text-slate-900 dark:text-slate-100 flex flex-col selection:bg-[#0d623d] selection:text-white dark:selection:bg-emerald-500 transition-colors duration-200">
       <Navbar />
 
       <main className="flex-grow pt-28 pb-20 relative">
@@ -39,7 +39,7 @@ export default function ApplyPage() {
 
           {/* Trust Highlights Below Form */}
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center sm:text-left">
-            <div className="p-4 rounded-xl glass-card border border-slate-200 dark:border-emerald-500/[0.12] flex items-start gap-3">
+            <div className="p-4 rounded-xl glass-card border border-emerald-200/80 dark:border-emerald-500/[0.12] flex items-start gap-3">
               <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-500/10 text-[#0d623d] dark:text-emerald-400 flex items-center justify-center shrink-0">
                 <ShieldCheck className="w-4 h-4" />
               </div>
@@ -51,7 +51,7 @@ export default function ApplyPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-xl glass-card border border-slate-200 dark:border-emerald-500/[0.12] flex items-start gap-3">
+            <div className="p-4 rounded-xl glass-card border border-emerald-200/80 dark:border-emerald-500/[0.12] flex items-start gap-3">
               <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-500/10 text-[#0d623d] dark:text-emerald-400 flex items-center justify-center shrink-0">
                 <Zap className="w-4 h-4" />
               </div>
@@ -63,7 +63,7 @@ export default function ApplyPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-xl glass-card border border-slate-200 dark:border-emerald-500/[0.12] flex items-start gap-3">
+            <div className="p-4 rounded-xl glass-card border border-emerald-200/80 dark:border-emerald-500/[0.12] flex items-start gap-3">
               <div className="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-500/10 text-teal-700 dark:text-teal-400 flex items-center justify-center shrink-0">
                 <Users className="w-4 h-4" />
               </div>
