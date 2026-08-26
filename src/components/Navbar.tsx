@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { id: "how-it-works", label: "How It Works", href: "/#how-it-works" },
   { id: "rituals", label: "Rituals", href: "/#rituals" },
   { id: "faq", label: "FAQ", href: "/#faq" },
+  { id: "founders", label: "Founders", href: "/#founders" },
 ];
 
 export function Navbar() {
@@ -28,7 +29,7 @@ export function Navbar() {
       return;
     }
 
-    const sectionIds = ["benefits", "how-it-works", "rituals", "faq"];
+    const sectionIds = ["benefits", "how-it-works", "rituals", "faq", "founders"];
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 250;
 

@@ -58,38 +58,9 @@ const STEPS = [
 ];
 
 export function HowItWorks() {
-  const [activeStep, setActiveStep] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Track scroll through the pinned container on desktop
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return;
-      if (window.innerWidth < 768) return; // Only lock scroll on tablet/desktop
-
-      const rect = containerRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      
-      const totalScrollable = rect.height - windowHeight;
-      if (totalScrollable <= 0) return;
-
-      const currentScroll = -rect.top;
-      const progress = Math.max(0, Math.min(1, currentScroll / totalScrollable));
-
-      // Map progress to 3 steps (0, 1, 2)
-      const index = Math.min(2, Math.floor(progress * 3));
-      setActiveStep(index);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <section ref={containerRef} id="how-it-works" className="relative py-12 md:py-16 md:min-h-[260vh]">
-      {/* Sticky viewport on desktop / natural flow on mobile */}
-      <div className="md:sticky md:top-20 md:min-h-[85vh] flex flex-col justify-center overflow-hidden py-2 sm:py-4">
+    <section id="how-it-works" className="relative py-16 md:py-24">
+      <div className="flex flex-col justify-center overflow-hidden py-4">
         {/* Ambient Neon Lighting */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] radial-glow-emerald opacity-50 pointer-events-none -z-10" />
 
@@ -142,7 +113,6 @@ export function HowItWorks() {
             </div>
 
             {STEPS.map((item, idx) => {
-              const isActive = activeStep === idx;
               const Icon = item.icon;
 
               return (
