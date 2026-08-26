@@ -16,16 +16,19 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://peercuit.com"),
-  title: "Peercuit — Find your people. Build together.",
+  title: "Peercuit",
   description:
     "The community for high school and college students to get honest feedback on their work, find like-minded peers, discover opportunities, and build things together.",
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico" },
+    ],
+    shortcut: "/icon.png",
+    apple: "/apple-icon.png",
   },
   openGraph: {
-    title: "Peercuit — Find your people. Build together.",
+    title: "Peercuit",
     description:
       "A community for high school and college students to find peers, get real feedback, and build together.",
     images: ["/logo.png"],
@@ -40,6 +43,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable}`}>
+      <head>
+        <link rel="icon" href="/icon.png" sizes="any" />
+      </head>
       <body className="min-h-screen antialiased">
         <ThemeProvider>
           <AuthProvider>{children}</AuthProvider>
