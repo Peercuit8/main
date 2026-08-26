@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+const urlRegex = /^https?:\/\//i;
+const shortUrlRegex = /^(github\.com|twitter\.com|x\.com|linkedin\.com|behance\.net|dribbble\.com|instagram\.com|youtube\.com|read\.cv|bento\.me|substack\.com|gitlab\.com)\//i;
+
 export const applicationSchema = z.object({
   fullName: z
     .string()
@@ -39,9 +42,17 @@ export const applicationSchema = z.object({
     .string()
     .optional()
     .refine(
-      (val) => !val || val === "" || /^https?:\/\//i.test(val) || /^github\.com\//i.test(val) || /^twitter\.com\//i.test(val) || /^x\.com\//i.test(val) || /^linkedin\.com\//i.test(val),
-      { message: "Please provide a valid URL (starting with https:// or a profile link)" }
+      (val) => !val || val === "" || urlRegex.test(val) || shortUrlRegex.test(val),
+      { message: "Please provide a valid URL" }
     ),
+  links: z
+    .array(
+      z.string().refine(
+        (val) => !val || val === "" || urlRegex.test(val) || shortUrlRegex.test(val),
+        { message: "Please provide a valid URL" }
+      )
+    )
+    .optional(),
 });
 
 export type ApplicationInput = z.infer<typeof applicationSchema>;

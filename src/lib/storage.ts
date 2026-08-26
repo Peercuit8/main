@@ -97,7 +97,9 @@ export async function saveApplication(
         current_work: newEntry.currentWork,
         why_join: newEntry.whyJoin,
         referral: newEntry.referral,
-        portfolio_link: newEntry.portfolioLink || null,
+        portfolio_link: newEntry.links && newEntry.links.length > 0 
+          ? newEntry.links.filter(Boolean).join(", ") 
+          : newEntry.portfolioLink || null,
         ip_address: newEntry.ipAddress,
         status: newEntry.status,
         created_at: newEntry.createdAt,

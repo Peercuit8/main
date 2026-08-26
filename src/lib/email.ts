@@ -93,10 +93,17 @@ ${data.whyJoin}
       </div>
 
       ${
-        data.portfolioLink
+        (data.links && data.links.filter(Boolean).length > 0) || data.portfolioLink
           ? `<div class="field-group">
-              <div class="label">Portfolio / Work Link</div>
-              <div class="value"><a href="${escapeHtml(data.portfolioLink)}" target="_blank" style="color: #6ee7b7; text-decoration: underline;">${escapeHtml(data.portfolioLink)}</a></div>
+              <div class="label">Portfolio / Project / Social Links</div>
+              <div class="value">
+                ${(data.links && data.links.filter(Boolean).length > 0 ? data.links.filter(Boolean) : [data.portfolioLink])
+                  .map(
+                    (link) =>
+                      `<div style="margin-bottom: 4px;"><a href="${escapeHtml(link || "")}" target="_blank" style="color: #6ee7b7; text-decoration: underline;">${escapeHtml(link || "")}</a></div>`
+                  )
+                  .join("")}
+              </div>
              </div>`
           : ""
       }

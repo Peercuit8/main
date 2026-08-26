@@ -142,10 +142,12 @@ export function ValueProps() {
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Smooth scroll spy through the 300vh track
+  // Smooth scroll spy on desktop viewports
   useEffect(() => {
     const handleScroll = () => {
       if (!containerRef.current) return;
+      if (window.innerWidth < 1024) return; // Only enable scroll spy on desktop
+
       const rect = containerRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       
@@ -168,28 +170,51 @@ export function ValueProps() {
   const ActiveIcon = activeItem.icon;
 
   return (
-    <section ref={containerRef} id="benefits" className="relative min-h-[320vh] py-16">
-      {/* Sticky viewport */}
-      <div className="sticky top-20 min-h-[85vh] flex flex-col justify-center overflow-hidden py-4">
+    <section ref={containerRef} id="benefits" className="relative py-12 lg:py-16 lg:min-h-[320vh]">
+      {/* Sticky viewport on desktop / standard fluid on mobile */}
+      <div className="lg:sticky lg:top-20 lg:min-h-[85vh] flex flex-col justify-center overflow-hidden py-2 sm:py-4">
         {/* Ambient Neon Lighting */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] radial-glow-emerald opacity-60 pointer-events-none -z-10" />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           {/* Header */}
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8 text-center sm:text-left">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300/80 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-2.5 shadow-xs">
               <Zap className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400 animate-pulse" />
               What We Do in Peercuit
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
               Everything you need to <span className="gradient-text-primary">level up together</span>.
             </h2>
           </div>
 
+          {/* Mobile Horizontal Pill Tabs (Scrollable) */}
+          <div className="flex lg:hidden items-center gap-2 overflow-x-auto pb-3 mb-6 no-scrollbar -mx-4 px-4">
+            {BENEFITS.map((item, idx) => {
+              const isActive = activeIndex === idx;
+              const Icon = item.icon;
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setActiveIndex(idx)}
+                  className={`shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                    isActive
+                      ? "bg-[#0d623d] dark:bg-emerald-600 text-white shadow-md shadow-emerald-900/20"
+                      : "bg-white/80 dark:bg-[#0a1810] text-slate-700 dark:text-slate-300 border border-emerald-300/40 dark:border-emerald-500/15"
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{item.badge}</span>
+                </button>
+              );
+            })}
+          </div>
+
           {/* Interactive HUD Showcase Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Left Column: Interactive Navigation Bars */}
-            <div className="lg:col-span-4 space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+            {/* Left Column: Interactive Navigation Bars (Desktop) */}
+            <div className="hidden lg:block lg:col-span-4 space-y-3">
               {BENEFITS.map((item, idx) => {
                 const isActive = activeIndex === idx;
                 const Icon = item.icon;
@@ -240,73 +265,73 @@ export function ValueProps() {
 
             {/* Right Column: 3D Holographic Card Display */}
             <div className="lg:col-span-8">
-              <div className="glass-card rounded-3xl p-6 sm:p-9 border-2 border-emerald-300/80 dark:border-emerald-500/35 shadow-2xl relative overflow-hidden min-h-[440px] flex flex-col justify-between">
+              <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-7 lg:p-9 border-2 border-emerald-300/80 dark:border-emerald-500/35 shadow-2xl relative overflow-hidden min-h-[380px] sm:min-h-[440px] flex flex-col justify-between">
                 {/* Background circuit grid */}
                 <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none" />
 
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeIndex}
-                    initial={{ opacity: 0, y: 20, scale: 0.98 }}
+                    initial={{ opacity: 0, y: 15, scale: 0.99 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -20, scale: 0.98 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    exit={{ opacity: 0, y: -15, scale: 0.99 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
                     className="relative z-10 w-full"
                   >
                     {/* Card Header */}
-                    <div className="flex items-center justify-between gap-4 mb-6">
-                      <div className="flex items-center gap-3.5">
-                        <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-950 dark:to-[#094d2f] border border-emerald-300/80 dark:border-emerald-400/30 flex items-center justify-center text-[#0d623d] dark:text-emerald-400 shadow-md">
-                          <ActiveIcon className="w-6 h-6" />
+                    <div className="flex items-start sm:items-center justify-between gap-3 mb-4 sm:mb-6">
+                      <div className="flex items-start sm:items-center gap-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-950 dark:to-[#094d2f] border border-emerald-300/80 dark:border-emerald-400/30 flex items-center justify-center text-[#0d623d] dark:text-emerald-400 shadow-md shrink-0">
+                          <ActiveIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                         </div>
                         <div>
-                          <span className="text-xs font-bold text-[#0d623d] dark:text-emerald-400 uppercase tracking-wider">
+                          <span className="text-[11px] sm:text-xs font-bold text-[#0d623d] dark:text-emerald-400 uppercase tracking-wider">
                             {activeItem.badge}
                           </span>
-                          <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+                          <h3 className="text-lg sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white leading-tight">
                             {activeItem.title}
                           </h3>
                         </div>
                       </div>
 
-                      <span className="text-4xl font-black text-slate-300 dark:text-emerald-900/60 font-mono select-none">
+                      <span className="text-2xl sm:text-4xl font-black text-slate-300 dark:text-emerald-900/60 font-mono select-none shrink-0">
                         {activeItem.step}
                       </span>
                     </div>
 
-                    <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
+                    <p className="text-xs sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed mb-4 sm:mb-6">
                       {activeItem.description}
                     </p>
 
                     {/* Highlights Pills */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6">
                       {activeItem.highlights.map((h, i) => (
                         <div
                           key={i}
-                          className="p-3 rounded-xl bg-white/80 dark:bg-[#07140c]/90 border border-emerald-200/80 dark:border-emerald-500/20 text-xs font-medium text-slate-700 dark:text-slate-200 flex items-start gap-2 shadow-xs"
+                          className="p-2.5 sm:p-3 rounded-xl bg-white/80 dark:bg-[#07140c]/90 border border-emerald-200/80 dark:border-emerald-500/20 text-xs font-medium text-slate-700 dark:text-slate-200 flex items-start gap-2 shadow-xs"
                         >
                           <div className="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-[#0d623d] dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
                             <Check className="w-3 h-3" />
                           </div>
-                          <span>{h}</span>
+                          <span className="text-[11px] sm:text-xs leading-snug">{h}</span>
                         </div>
                       ))}
                     </div>
 
                     {/* Rich Interactive Mockup Preview */}
-                    <div className="p-4 rounded-2xl bg-white/90 dark:bg-[#050e08] border border-emerald-300/70 dark:border-emerald-500/25 shadow-inner">
+                    <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/90 dark:bg-[#050e08] border border-emerald-300/70 dark:border-emerald-500/25 shadow-inner">
                       {activeItem.preview.type === "code" && (
                         <div>
                           <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 pb-2 mb-2 border-b border-emerald-500/15">
-                            <span className="text-[#0d623d] dark:text-emerald-400 font-bold flex items-center gap-1.5">
-                              <MessageSquareCode className="w-3.5 h-3.5" />
-                              {activeItem.preview.title}
+                            <span className="text-[#0d623d] dark:text-emerald-400 font-bold flex items-center gap-1.5 truncate pr-2">
+                              <MessageSquareCode className="w-3.5 h-3.5 shrink-0" />
+                              <span className="truncate">{activeItem.preview.title}</span>
                             </span>
-                            <span className="text-[11px] bg-emerald-100 dark:bg-emerald-500/15 text-[#0d623d] dark:text-emerald-300 px-2 py-0.5 rounded-md font-semibold">
+                            <span className="text-[10px] sm:text-[11px] bg-emerald-100 dark:bg-emerald-500/15 text-[#0d623d] dark:text-emerald-300 px-2 py-0.5 rounded-md font-semibold shrink-0">
                               {activeItem.preview.badge}
                             </span>
                           </div>
-                          <pre className="text-xs font-mono text-slate-900 dark:text-emerald-300 bg-slate-50 dark:bg-[#040805] p-3.5 rounded-xl overflow-x-auto leading-relaxed border border-emerald-500/15">
+                          <pre className="text-[11px] sm:text-xs font-mono text-slate-900 dark:text-emerald-300 bg-slate-50 dark:bg-[#040805] p-3 sm:p-3.5 rounded-xl overflow-x-auto leading-relaxed border border-emerald-500/15">
                             {activeItem.preview.snippet}
                           </pre>
                         </div>
@@ -316,21 +341,21 @@ export function ValueProps() {
                         <div className="space-y-2.5">
                           <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 pb-1">
                             <span className="text-[#0d623d] dark:text-emerald-400 font-bold flex items-center gap-1.5">
-                              <BrainCircuit className="w-3.5 h-3.5" />
-                              {activeItem.preview.title}
+                              <BrainCircuit className="w-3.5 h-3.5 shrink-0" />
+                              <span>{activeItem.preview.title}</span>
                             </span>
                             <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-400">
                               {activeItem.preview.badge}
                             </span>
                           </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5">
                             {activeItem.preview.items?.map((item, itIdx) => (
                               <div
                                 key={itIdx}
-                                className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#08160d] border border-emerald-300/60 dark:border-emerald-500/20 text-xs shadow-xs"
+                                className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-[#08160d] border border-emerald-300/60 dark:border-emerald-500/20 text-xs shadow-xs"
                               >
-                                <p className="font-bold text-slate-900 dark:text-white">{item.label}</p>
-                                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{item.desc}</p>
+                                <p className="font-bold text-slate-900 dark:text-white text-xs">{item.label}</p>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">{item.desc}</p>
                               </div>
                             ))}
                           </div>
@@ -338,17 +363,17 @@ export function ValueProps() {
                       )}
 
                       {activeItem.preview.type === "bounty" && (
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-1.5">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 p-1">
                           <div>
-                            <span className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                              <Trophy className="w-4 h-4 text-amber-500" />
-                              {activeItem.preview.event}
+                            <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                              <Trophy className="w-4 h-4 text-amber-500 shrink-0" />
+                              <span>{activeItem.preview.event}</span>
                             </span>
                             <p className="text-xs text-[#0d623d] dark:text-emerald-400 font-bold mt-0.5">
                               {activeItem.preview.prize}
                             </p>
                           </div>
-                          <span className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/25">
+                          <span className="text-[11px] sm:text-xs font-semibold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/25 self-start sm:self-auto">
                             {activeItem.preview.status}
                           </span>
                         </div>
@@ -358,8 +383,8 @@ export function ValueProps() {
                         <div className="space-y-2">
                           <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 pb-1">
                             <span className="text-[#0d623d] dark:text-emerald-400 font-bold flex items-center gap-1.5">
-                              <BookOpen className="w-3.5 h-3.5" />
-                              {activeItem.preview.title}
+                              <BookOpen className="w-3.5 h-3.5 shrink-0" />
+                              <span>{activeItem.preview.title}</span>
                             </span>
                             <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-400">
                               {activeItem.preview.badge}
@@ -371,7 +396,7 @@ export function ValueProps() {
                                 key={aIdx}
                                 className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-[#08160d] border border-emerald-300/40 dark:border-emerald-500/15 text-xs"
                               >
-                                <span className="font-semibold text-slate-900 dark:text-slate-200 truncate pr-2">
+                                <span className="font-semibold text-slate-900 dark:text-slate-200 truncate pr-2 text-[11px] sm:text-xs">
                                   {art.title}
                                 </span>
                                 <span className="text-[10px] bg-emerald-100 dark:bg-emerald-500/20 text-[#0d623d] dark:text-emerald-300 px-2 py-0.5 rounded font-bold shrink-0">
@@ -387,8 +412,8 @@ export function ValueProps() {
                         <div className="space-y-2">
                           <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 pb-1">
                             <span className="text-[#0d623d] dark:text-emerald-400 font-bold flex items-center gap-1.5">
-                              <Award className="w-3.5 h-3.5 text-amber-500" />
-                              {activeItem.preview.title}
+                              <Award className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                              <span>{activeItem.preview.title}</span>
                             </span>
                             <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-400">
                               {activeItem.preview.badge}
@@ -398,10 +423,10 @@ export function ValueProps() {
                             {activeItem.preview.metrics?.map((m, mIdx) => (
                               <div
                                 key={mIdx}
-                                className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#08160d] border border-emerald-300/60 dark:border-emerald-500/20 text-xs text-center shadow-xs"
+                                className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-[#08160d] border border-emerald-300/60 dark:border-emerald-500/20 text-xs text-center shadow-xs"
                               >
-                                <p className="font-bold text-slate-900 dark:text-white">{m.label}</p>
-                                <p className="text-xs font-black text-[#0d623d] dark:text-emerald-400 mt-1">{m.points}</p>
+                                <p className="font-bold text-slate-900 dark:text-white text-xs">{m.label}</p>
+                                <p className="text-xs font-black text-[#0d623d] dark:text-emerald-400 mt-0.5">{m.points}</p>
                               </div>
                             ))}
                           </div>
