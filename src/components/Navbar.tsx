@@ -1,14 +1,73 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { PeercuitLogo } from "./PeercuitLogo";
 import { ThemeToggle } from "./ThemeToggle";
 import { UserNav } from "./UserNav";
 
+const NAV_ITEMS = [
+  { id: "benefits", label: "What You Get", href: "/#benefits" },
+  { id: "how-it-works", label: "How It Works", href: "/#how-it-works" },
+  { id: "rituals", label: "Rituals", href: "/#rituals" },
+  { id: "faq", label: "FAQ", href: "/#faq" },
+];
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
+  const pathname = usePathname();
+
+  // Scroll spy to detect active section in viewport when on home page
+  useEffect(() => {
+    if (pathname !== "/") {
+      setActiveSection("");
+      return;
+    }
+
+    const sectionIds = ["benefits", "how-it-works", "rituals", "faq"];
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 250;
+
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const id = sectionIds[i];
+        const el = document.getElementById(id);
+        if (el) {
+          const top = el.offsetTop;
+          if (scrollPosition >= top) {
+            setActiveSection(id);
+            return;
+          }
+        }
+      }
+      setActiveSection("");
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
+
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    targetId: string
+  ) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      const el = document.getElementById(targetId);
+      if (el) {
+        setActiveSection(targetId);
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        setIsOpen(false);
+      }
+    } else {
+      setIsOpen(false);
+    }
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-[#050806]/90 backdrop-blur-md border-b border-slate-200 dark:border-emerald-500/[0.15] transition-colors duration-200">
@@ -18,45 +77,60 @@ export function Navbar() {
           <PeercuitLogo size="sm" showWordmark={true} />
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-7">
-          <Link
-            href="/#benefits"
-            className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
-          >
-            What You Get
-          </Link>
-          <Link
-            href="/#how-it-works"
-            className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
-          >
-            How It Works
-          </Link>
-          <Link
-            href="/#rituals"
-            className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
-          >
-            Rituals
-          </Link>
-          <Link
-            href="/#faq"
-            className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
-          >
-            FAQ
-          </Link>
+        {/* Desktop Nav with Animated Active Underline */}
+        <nav className="hidden md:flex items-center gap-1 sm:gap-2">
+          {NAV_ITEMS.map((item) => {
+            const isActive = pathname === "/" && activeSection === item.id;
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                onClick={(e) => handleNavClick(e, item.id)}
+                className={`relative px-3.5 py-2 text-sm font-medium transition-colors cursor-pointer ${
+                  isActive
+                    ? "text-[#0d623d] dark:text-emerald-400 font-semibold"
+                    : "text-slate-600 dark:text-slate-300 hover:text-[#0d623d] dark:hover:text-emerald-400"
+                }`}
+              >
+                <span>{item.label}</span>
+
+                {/* Animated active underline */}
+                {isActive && (
+                  <motion.div
+                    layoutId="active-nav-underline"
+                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-[#0d623d] dark:bg-emerald-400 rounded-full shadow-xs"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Desktop CTA, Theme Toggle & User Auth */}
         <div className="hidden md:flex items-center gap-3">
           <ThemeToggle />
           <UserNav />
-          <Link
-            href="/apply"
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-[#0d623d] hover:bg-[#094d2f] dark:bg-emerald-600 dark:hover:bg-emerald-500 rounded-xl shadow-sm hover:shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
-          >
-            Apply to Join
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          <div className="relative">
+            <Link
+              href="/apply"
+              className={`relative inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all ${
+                pathname === "/apply"
+                  ? "bg-[#0d623d] dark:bg-emerald-500 text-white shadow-md ring-2 ring-emerald-400/40"
+                  : "text-white bg-[#0d623d] hover:bg-[#094d2f] dark:bg-emerald-600 dark:hover:bg-emerald-500 shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
+              }`}
+            >
+              Apply to Join
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            {pathname === "/apply" && (
+              <motion.div
+                layoutId="active-nav-underline"
+                className="absolute -bottom-2 left-2 right-2 h-0.5 bg-[#0d623d] dark:bg-emerald-400 rounded-full"
+                transition={{ type: "spring", stiffness: 380, damping: 30 }}
+              />
+            )}
+          </div>
         </div>
 
         {/* Mobile Header Buttons */}
@@ -82,40 +156,36 @@ export function Navbar() {
       {/* Mobile Drawer Menu */}
       {isOpen && (
         <div className="md:hidden bg-white dark:bg-[#070e0a] border-b border-slate-200 dark:border-emerald-500/[0.15] px-4 py-6 space-y-4">
-          <nav className="flex flex-col space-y-3">
-            <Link
-              href="/#benefits"
-              onClick={() => setIsOpen(false)}
-              className="text-base font-medium text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 py-1"
-            >
-              What You Get
-            </Link>
-            <Link
-              href="/#how-it-works"
-              onClick={() => setIsOpen(false)}
-              className="text-base font-medium text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 py-1"
-            >
-              How It Works
-            </Link>
-            <Link
-              href="/#rituals"
-              onClick={() => setIsOpen(false)}
-              className="text-base font-medium text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 py-1"
-            >
-              Rituals
-            </Link>
-            <Link
-              href="/#faq"
-              onClick={() => setIsOpen(false)}
-              className="text-base font-medium text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-400 py-1"
-            >
-              FAQ
-            </Link>
+          <nav className="flex flex-col space-y-2">
+            {NAV_ITEMS.map((item) => {
+              const isActive = pathname === "/" && activeSection === item.id;
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  onClick={(e) => handleNavClick(e, item.id)}
+                  className={`text-base font-medium py-1.5 px-3 rounded-lg flex items-center justify-between transition-colors ${
+                    isActive
+                      ? "text-[#0d623d] dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40"
+                      : "text-slate-700 dark:text-slate-200 hover:text-[#0d623d] dark:hover:text-emerald-400"
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  {isActive && (
+                    <span className="w-2 h-2 rounded-full bg-[#0d623d] dark:bg-emerald-400" />
+                  )}
+                </Link>
+              );
+            })}
             <div className="pt-2">
               <Link
                 href="/apply"
                 onClick={() => setIsOpen(false)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-[#0d623d] dark:bg-emerald-600 rounded-xl"
+                className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white rounded-xl ${
+                  pathname === "/apply"
+                    ? "bg-[#094d2f] dark:bg-emerald-500 ring-2 ring-emerald-400/40"
+                    : "bg-[#0d623d] dark:bg-emerald-600"
+                }`}
               >
                 Apply to Join Peercuit
                 <ArrowRight className="w-4 h-4" />

@@ -2,10 +2,26 @@
 
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Mail, Heart } from "lucide-react";
 import { PeercuitLogo } from "./PeercuitLogo";
 
 export function Footer() {
+  const pathname = usePathname();
+
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    targetId: string
+  ) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  };
+
   return (
     <footer className="border-t border-slate-200 dark:border-emerald-500/[0.12] bg-slate-50 dark:bg-[#040605] pt-16 pb-12 text-slate-600 dark:text-slate-400 text-sm transition-colors">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,22 +53,38 @@ export function Footer() {
             </h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/#benefits" className="hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">
+                <Link
+                  href="/#benefits"
+                  onClick={(e) => handleNavClick(e, "benefits")}
+                  className="hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors cursor-pointer"
+                >
                   What You Get
                 </Link>
               </li>
               <li>
-                <Link href="/#how-it-works" className="hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">
+                <Link
+                  href="/#how-it-works"
+                  onClick={(e) => handleNavClick(e, "how-it-works")}
+                  className="hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors cursor-pointer"
+                >
                   How It Works
                 </Link>
               </li>
               <li>
-                <Link href="/#rituals" className="hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">
+                <Link
+                  href="/#rituals"
+                  onClick={(e) => handleNavClick(e, "rituals")}
+                  className="hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors cursor-pointer"
+                >
                   Weekly Rituals
                 </Link>
               </li>
               <li>
-                <Link href="/#faq" className="hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">
+                <Link
+                  href="/#faq"
+                  onClick={(e) => handleNavClick(e, "faq")}
+                  className="hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors cursor-pointer"
+                >
                   FAQ
                 </Link>
               </li>
