@@ -45,7 +45,7 @@ export function Hero() {
           </motion.div>
 
           {/* Singular Bold Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white max-w-4xl leading-[1.1] mb-5 sm:mb-6">
+          <h1 className="text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white max-w-4xl mx-auto leading-[1.1] mb-5 sm:mb-6">
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -69,7 +69,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="text-base sm:text-lg md:text-xl text-slate-700 dark:text-slate-300 max-w-2xl font-normal leading-relaxed mb-8 sm:mb-10 px-2"
+            className="text-center text-base sm:text-lg md:text-xl text-slate-700 dark:text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed mb-8 sm:mb-10 px-2"
           >
             A curated community for{" "}
             <span className="text-slate-900 dark:text-white font-semibold underline decoration-[#0d623d] dark:decoration-emerald-500 decoration-2 underline-offset-4">
@@ -83,7 +83,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto mb-12 sm:mb-16"
+            className="flex flex-col sm:flex-row items-center justify-center w-full mb-12 sm:mb-16"
           >
             <Link
               href="/apply"
@@ -91,12 +91,6 @@ export function Hero() {
             >
               Apply to Join Peercuit
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Link>
-            <Link
-              href="#benefits"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 text-sm sm:text-base font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white glass-card border border-emerald-300/60 dark:border-emerald-500/25 rounded-xl transition-all shadow-xs"
-            >
-              Explore Community Deck
             </Link>
           </motion.div>
 
