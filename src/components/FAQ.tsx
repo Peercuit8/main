@@ -14,20 +14,16 @@ const FAQS = [
     a: "You're totally welcome! We don't judge you by how many GitHub stars or followers you have. What matters is your curiosity, eagerness to learn, and willingness to participate and help other students.",
   },
   {
-    q: "Why do you have an application form instead of an open link?",
-    a: "Open invite links get overrun by spammers, promo bots, and inactive lurkers. We run a 2-minute application to keep the vibe safe, welcoming, and focused on genuine student builders.",
+    q: "Where does the community live?",
+    a: "We have an active, curated WhatsApp Community broken into groups like Introductions, Feedback, Teammate Search, and Coffee Chats.",
   },
   {
-    q: "Where does the community live?",
-    a: "We have an active, curated WhatsApp Community with themed sub-groups for project feedback, teammate matching for hackathons, opportunity alerts, and weekly Sunday Demo Nights.",
+    q: "What happens during the Saturday Live Debate Call?",
+    a: "Every Saturday, we host a live call where candidates show a demo of stuff they have built and others give real, actionable feedback. We also debate interesting tech topics, blending discussion with accountability.",
   },
   {
     q: "How does the Best Candidate of the Month work?",
     a: "Once a month, we recognize one standout member based on their activity, the quality of feedback they've given to others, and the work they've shipped. Winners receive an official certificate.",
-  },
-  {
-    q: "What happens during the Saturday Live Debate Call?",
-    a: "Every Saturday, we host a live call where we openly debate a chosen tech topic. The call also includes a demo slot where a member can showcase what they've built that week, blending discussion with accountability.",
   },
   {
     q: "I'm in high school — will I fit in with college students?",
