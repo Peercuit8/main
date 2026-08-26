@@ -18,63 +18,73 @@ import {
 const RITUALS = [
   {
     step: "01",
-    day: "Every Sunday",
-    time: "8:00 PM EST / 5:30 AM IST",
-    title: "15-Min Demo Nights",
+    day: "Always On",
+    time: "Community Onboarding",
+    title: "Introductions Group",
     description:
-      "Hop on voice chat to screen-share what you built this week. Whether it's 10 lines of code, a Figma mockup, or a deployed app — showcase your work for real feedback.",
-    tag: "Showcase & Feedback",
-    icon: Terminal,
+      "New members drop in, share who they are, what they're building or learning, and what they're curious about. Breaks the ice before they jump into the rest of the community.",
+    tag: "Icebreaker",
+    icon: Users2,
   },
   {
     step: "02",
-    day: "Weekly & Bimonthly",
-    time: "Live Audio & Text Stages",
-    title: "Student Debates",
+    day: "Daily",
+    time: "Actionable Critique",
+    title: "Feedback Group",
     description:
-      "High-energy, structured student debates covering controversial tech trends, AI safety, open source, startup ideas, and philosophy.",
-    tag: "Debates",
-    icon: Flame,
+      "Members post their work-in-progress — code, design, writing, side projects — and get honest, actionable critique from peers. No empty praise, just real notes that make the work better.",
+    tag: "Peer Review",
+    icon: MessageSquare,
   },
   {
     step: "03",
-    day: "Bi-Weekly",
-    time: "Flexible 1-on-1 Matching",
-    title: "Peer Coffee Roulette",
+    day: "Always On",
+    time: "Find Your People",
+    title: "Teammate Search",
     description:
-      "Get randomly matched with another curious student builder for a casual 15-minute virtual coffee chat to exchange ideas and make genuine friends.",
-    tag: "Random Coffee Chats",
-    icon: Coffee,
+      "A dedicated space to find people to build with — whether it's a hackathon partner, a co-founder for a side project, or someone to split a workload with. Post what you're building and what kind of person you need.",
+    tag: "Networking",
+    icon: BrainCircuit,
   },
   {
     step: "04",
-    day: "Monthly / Seasonal",
-    time: "48-Hour Sprint Challenges",
-    title: "Peercuit Internal Comps",
+    day: "Every Saturday",
+    time: "Live Call & Demos",
+    title: "Saturday Live Debate Call",
     description:
-      "We host our own internal student hackathons, product design sprints, and prize bounties with community voting and grant awards.",
-    tag: "Host Comps",
-    icon: Trophy,
+      "A weekly live call combining open debate on a chosen topic with a demo slot, where one member shows off what they've built that week. Mixes discussion with accountability.",
+    tag: "Live Event",
+    icon: Flame,
   },
   {
     step: "05",
-    day: "End of Quarter",
-    time: "Published Every 3 Months",
-    title: "Quarterly Student Magazine",
+    day: "Every 3-4 Days",
+    time: "1-on-1 Matching",
+    title: "Random Coffee Chats",
     description:
-      "Write deep-dive technical articles, project post-mortems, and founder stories published in our official end-of-quarter digital magazine.",
-    tag: "Articles & Stories",
-    icon: BookOpen,
+      "Members get randomly grouped for a casual chat — no agenda, just a chance to meet people outside their usual circle and make genuine connections.",
+    tag: "Connections",
+    icon: Coffee,
   },
   {
     step: "06",
-    day: "Ongoing",
-    time: "High Schools & Colleges",
-    title: "Campus Ambassadors & Karma Points",
+    day: "Monthly",
+    time: "Standout Recognition",
+    title: "Candidate of the Month",
     description:
-      "Represent Peercuit at your school or university, organize local meetups, and earn Builder Karma points for reviewing peers and helping the community.",
-    tag: "Ambassadors & Points",
+      "Once a month, one standout member is recognized with a certificate — based on activity, quality of feedback given, or work shipped.",
+    tag: "Awards",
     icon: Award,
+  },
+  {
+    step: "07",
+    day: "Bi-monthly",
+    time: "Hackathons & Sprints",
+    title: "Bi-monthly Competitions",
+    description:
+      "Randomly announced competitions with a set deadline, culminating in a certificate for winners/top performers. Keeps the community shipping with a bit of friendly pressure.",
+    tag: "Competitions",
+    icon: Trophy,
   },
 ];
 
@@ -106,8 +116,8 @@ export function Rituals() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.4, delay: idx * 0.08 }}
-                className="glass-card rounded-3xl p-6 sm:p-7 border border-emerald-300/60 dark:border-emerald-500/25 shadow-xl flex flex-col justify-between hover:border-emerald-400 dark:hover:border-emerald-500/60 transition-all hover:scale-[1.01]"
+                transition={{ duration: 0.5, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                className="rounded-3xl p-6 sm:p-7 bg-white/40 dark:bg-[#07130c]/40 backdrop-blur-md border border-emerald-900/5 dark:border-emerald-500/10 shadow-none hover:shadow-[0_8px_30px_rgba(13,98,61,0.08)] dark:hover:shadow-[0_8px_30px_rgba(16,185,129,0.08)] hover:-translate-y-0.5 hover:border-emerald-900/10 dark:hover:border-emerald-500/20 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-4">

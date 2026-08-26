@@ -9,6 +9,7 @@ import { Rituals } from "@/components/Rituals";
 import { SocialProof } from "@/components/SocialProof";
 import { FAQ } from "@/components/FAQ";
 import { Footer } from "@/components/Footer";
+import { Founders } from "@/components/Founders";
 
 export default function Home() {
   return (
@@ -31,7 +32,10 @@ export default function Home() {
         {/* 5. Honest Principles & Community Metrics */}
         <SocialProof />
 
-        {/* 6. Mid-Page Big CTA Section */}
+        {/* 6. Founders */}
+        <Founders />
+
+        {/* 7. Mid-Page Big CTA Section */}
         <section className="py-20 relative overflow-hidden">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="relative rounded-3xl p-8 sm:p-12 md:p-16 glass-card border border-emerald-300/80 dark:border-emerald-500/30 shadow-2xl overflow-hidden text-center">

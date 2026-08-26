@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Zap, Shield, Code2, Flame } from "lucide-react";
+import { motion } from "framer-motion";
 
 const COMMUNITY_PILLARS = [
   {
@@ -36,11 +37,24 @@ export function SocialProof() {
     <section className="py-14 sm:py-20 relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Transparent Community Metrics Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-12 sm:mb-16">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={{
+            visible: { transition: { staggerChildren: 0.1 } },
+            hidden: {}
+          }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-12 sm:mb-16"
+        >
           {STATS.map((stat, idx) => (
-            <div
+            <motion.div
               key={idx}
-              className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center border border-slate-200 dark:border-emerald-500/[0.15]"
+              variants={{
+                hidden: { opacity: 0, y: 15, scale: 0.95 },
+                visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } }
+              }}
+              className="rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center bg-white/40 dark:bg-[#07130c]/40 backdrop-blur-md border border-emerald-900/5 dark:border-emerald-500/10 shadow-none hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(13,98,61,0.08)] dark:hover:shadow-[0_8px_30px_rgba(16,185,129,0.08)] transition-all duration-300"
             >
               <div className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-1 gradient-text-highlight">
                 {stat.value}
@@ -48,13 +62,19 @@ export function SocialProof() {
               <div className="text-[11px] sm:text-sm text-slate-600 dark:text-slate-300 font-medium">
                 {stat.label}
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Community Values & Manifesto */}
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/70 border border-emerald-300/60 dark:border-emerald-500/25 text-emerald-800 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-3 sm:mb-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-3xl mx-auto mb-10 sm:mb-12"
+        >
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/70 border border-emerald-300/60 dark:border-emerald-500/25 text-emerald-800 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-3 sm:mb-4 shadow-xs">
             <Zap className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400" />
             Our Community Principles
           </div>
@@ -64,16 +84,29 @@ export function SocialProof() {
           <p className="text-xs sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed px-2">
             A focused environment where high school and college students collaborate without noise, spam, or networking superficiality.
           </p>
-        </div>
+        </motion.div>
 
         {/* 3 Principles Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
+          variants={{
+            visible: { transition: { staggerChildren: 0.15 } },
+            hidden: {}
+          }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6"
+        >
           {COMMUNITY_PILLARS.map((pillar, idx) => {
             const Icon = pillar.icon;
             return (
-              <div
+              <motion.div
                 key={idx}
-                className="glass-card glass-card-hover rounded-2xl p-5 sm:p-7 flex flex-col justify-between border border-slate-200 dark:border-emerald-500/[0.15]"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }
+                }}
+                className="rounded-2xl p-5 sm:p-7 flex flex-col justify-between bg-white/40 dark:bg-[#07130c]/40 backdrop-blur-md border border-emerald-900/5 dark:border-emerald-500/10 shadow-none hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(13,98,61,0.08)] dark:hover:shadow-[0_8px_30px_rgba(16,185,129,0.08)] transition-all duration-300"
               >
                 <div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/90 border border-emerald-300/60 dark:border-emerald-500/30 flex items-center justify-center text-[#0d623d] dark:text-emerald-400 mb-4 sm:mb-5 shadow-xs">
@@ -86,10 +119,10 @@ export function SocialProof() {
                     {pillar.description}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { ChevronDown, HelpCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const FAQS = [
   {
@@ -21,12 +22,12 @@ const FAQS = [
     a: "We have an active, curated WhatsApp Community with themed sub-groups for project feedback, teammate matching for hackathons, opportunity alerts, and weekly Sunday Demo Nights.",
   },
   {
-    q: "How do the Campus Ambassador program & Builder Karma points work?",
-    a: "Members earn Builder Karma (reputation points) for constructive peer reviews, shipping project demos, and helping peers. Campus Ambassadors represent Peercuit at their school or university, organize local build meetups, and receive leadership recognition.",
+    q: "How does the Best Candidate of the Month work?",
+    a: "Once a month, we recognize one standout member based on their activity, the quality of feedback they've given to others, and the work they've shipped. Winners receive an official certificate.",
   },
   {
-    q: "Can I write for the Quarterly Student Magazine?",
-    a: "Yes! At the end of each quarter, any member can submit deep-dive technical articles, project post-mortems, design essays, or founder stories to be reviewed and published in our official digital magazine.",
+    q: "What happens during the Saturday Live Debate Call?",
+    a: "Every Saturday, we host a live call where we openly debate a chosen tech topic. The call also includes a demo slot where a member can showcase what they've built that week, blending discussion with accountability.",
   },
   {
     q: "I'm in high school — will I fit in with college students?",
@@ -44,8 +45,14 @@ export function FAQ() {
   return (
     <section id="faq" className="py-24 relative">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/70 border border-emerald-300/60 dark:border-emerald-500/25 text-emerald-800 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-2xl mx-auto mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/70 border border-emerald-300/60 dark:border-emerald-500/25 text-emerald-800 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-4 shadow-xs">
             <HelpCircle className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400" />
             Got Questions?
           </div>
@@ -55,36 +62,50 @@ export function FAQ() {
           <p className="text-slate-600 dark:text-slate-300 text-base">
             Everything you need to know about joining, building, and publishing in Peercuit.
           </p>
-        </div>
+        </motion.div>
 
         <div className="space-y-4">
           {FAQS.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
-              <div
+              <motion.div
                 key={idx}
-                className="glass-card rounded-xl border border-slate-200 dark:border-emerald-500/[0.12] overflow-hidden transition-colors hover:border-[#0d623d] dark:hover:border-emerald-500/30"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.4, delay: idx * 0.05, ease: [0.16, 1, 0.3, 1] }}
+                className="rounded-xl border bg-white/40 dark:bg-[#07130c]/40 backdrop-blur-md border-emerald-900/5 dark:border-emerald-500/10 shadow-none hover:shadow-[0_8px_30px_rgba(13,98,61,0.06)] dark:hover:shadow-[0_8px_30px_rgba(16,185,129,0.06)] overflow-hidden transition-all duration-300 hover:border-emerald-900/15 dark:hover:border-emerald-500/30"
               >
                 <button
                   onClick={() => toggle(idx)}
-                  className="w-full px-6 py-5 text-left flex items-center justify-between gap-4 focus:outline-none cursor-pointer"
+                  className="w-full px-6 py-5 min-h-[60px] text-left flex items-center justify-between gap-4 focus:outline-none cursor-pointer"
                   aria-expanded={isOpen}
                 >
                   <span className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
                     {faq.q}
                   </span>
                   <ChevronDown
-                    className={`w-5 h-5 text-[#0d623d] dark:text-emerald-400 shrink-0 transition-transform duration-200 ${
+                    className={`w-5 h-5 text-[#0d623d] dark:text-emerald-400 shrink-0 transition-transform duration-300 ease-in-out ${
                       isOpen ? "rotate-180 text-emerald-600 dark:text-emerald-300" : ""
                     }`}
                   />
                 </button>
-                {isOpen && (
-                  <div className="px-6 pb-5 pt-1 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-200 dark:border-emerald-500/[0.08]">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-6 pb-5 pt-1 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-200 dark:border-emerald-500/[0.08]">
+                        {faq.a}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             );
           })}
         </div>

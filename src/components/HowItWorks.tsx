@@ -52,7 +52,7 @@ const STEPS = [
     mock: {
       type: "unlock",
       title: "WhatsApp Community Circles",
-      channels: ["Project Feedback", "Find Teammates", "Sunday Demos", "Opportunities"],
+      channels: ["Introductions", "Feedback", "Teammate Search", "Coffee Chats"],
     },
   },
 ];
@@ -109,53 +109,62 @@ export function HowItWorks() {
           </div>
 
           {/* Connected Step Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 relative">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 relative"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-10%" }}
+            variants={{
+              visible: { transition: { staggerChildren: 0.2 } },
+              hidden: {}
+            }}
+          >
+            {/* Connecting line for desktop */}
+            <div className="hidden md:block absolute top-[4rem] left-[10%] right-[10%] h-[2px] bg-emerald-200/50 dark:bg-emerald-500/10 z-0">
+              <motion.div 
+                className="h-full bg-emerald-500/50"
+                initial={{ width: "0%" }}
+                whileInView={{ width: "100%" }}
+                viewport={{ once: true, margin: "-10%" }}
+                transition={{ duration: 1.5, ease: "easeInOut" }}
+              />
+            </div>
+
+            {/* Connecting line for mobile */}
+            <div className="md:hidden absolute left-8 top-10 bottom-10 w-[2px] bg-emerald-200/50 dark:bg-emerald-500/10 z-0">
+              <motion.div 
+                className="w-full bg-emerald-500/50"
+                initial={{ height: "0%" }}
+                whileInView={{ height: "100%" }}
+                viewport={{ once: true, margin: "-10%" }}
+                transition={{ duration: 1.5, ease: "easeInOut" }}
+              />
+            </div>
+
             {STEPS.map((item, idx) => {
               const isActive = activeStep === idx;
-              const isPast = activeStep > idx;
               const Icon = item.icon;
 
               return (
-                <div
+                <motion.div
                   key={idx}
-                  onClick={() => setActiveStep(idx)}
-                  className={`glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-7 flex flex-col justify-between transition-all duration-300 cursor-pointer relative overflow-hidden ${
-                    isActive
-                      ? "border-2 border-emerald-500 shadow-2xl shadow-emerald-950/20 scale-[1.01] sm:scale-[1.03]"
-                      : isPast
-                      ? "border border-emerald-400/50 opacity-85"
-                      : "border border-emerald-900/10 dark:border-emerald-500/15 opacity-70 hover:opacity-100"
-                  }`}
+                  variants={{
+                    hidden: { opacity: 0, y: 30, scale: 0.95 },
+                    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }
+                  }}
+                  className={`glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-7 flex flex-col justify-between transition-all duration-300 relative overflow-hidden z-10 border border-emerald-900/10 dark:border-emerald-500/15 hover:border-emerald-400/50 group bg-white/80 dark:bg-[#07130c]/80`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3.5">
-                      <span
-                        className={`text-2xl sm:text-3xl font-black font-mono transition-colors ${
-                          isActive
-                            ? "text-[#0d623d] dark:text-emerald-400"
-                            : "text-slate-300 dark:text-emerald-900/60"
-                        }`}
-                      >
+                      <span className="text-2xl sm:text-3xl font-black font-mono text-[#0d623d] dark:text-emerald-400/80">
                         {item.step}
                       </span>
-                      <span
-                        className={`text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-full border transition-colors ${
-                          isActive
-                            ? "bg-[#0d623d] text-white border-[#0d623d] dark:bg-emerald-500 dark:border-emerald-400"
-                            : "bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/20"
-                        }`}
-                      >
+                      <span className="text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-full border bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/20">
                         {item.badge}
                       </span>
                     </div>
 
-                    <div
-                      className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl border flex items-center justify-center mb-3 sm:mb-4 transition-all shadow-xs ${
-                        isActive
-                          ? "bg-gradient-to-br from-[#0d623d] to-emerald-600 text-white shadow-lg shadow-emerald-600/30 border-emerald-400"
-                          : "bg-emerald-100 dark:bg-emerald-950/80 border-emerald-300 dark:border-emerald-500/30 text-[#0d623d] dark:text-emerald-400"
-                      }`}
-                    >
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl border flex items-center justify-center mb-3 sm:mb-4 shadow-xs bg-gradient-to-br from-[#0d623d] to-emerald-600 text-white shadow-lg shadow-emerald-600/30 border-emerald-400 group-hover:scale-105 transition-transform">
                       <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
 
@@ -171,7 +180,7 @@ export function HowItWorks() {
                   </div>
 
                   {/* Micro Mockup */}
-                  <div className="p-3 sm:p-3.5 rounded-xl bg-white/90 dark:bg-[#07130c]/90 border border-emerald-300/60 dark:border-emerald-500/15 text-xs text-slate-700 dark:text-slate-300 space-y-1.5 shadow-xs">
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-white/90 dark:bg-[#0a1810] border border-emerald-300/60 dark:border-emerald-500/15 text-xs text-slate-700 dark:text-slate-300 space-y-1.5 shadow-xs relative z-10">
                     <p className="font-bold text-[10px] sm:text-[11px] text-slate-900 dark:text-white pb-1 border-b border-emerald-500/10">
                       {item.mock.title}
                     </p>
@@ -200,19 +209,10 @@ export function HowItWorks() {
                       </div>
                     )}
                   </div>
-
-                  {/* Active Indicator Top Glow */}
-                  {isActive && (
-                    <motion.div
-                      layoutId="active-howitworks-bar"
-                      className="absolute top-0 left-0 right-0 h-1 sm:h-1.5 bg-gradient-to-r from-[#0d623d] via-emerald-400 to-[#16a34a]"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
 
           {/* Bottom Action */}
           <div className="mt-8 sm:mt-10 text-center">

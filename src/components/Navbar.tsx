@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { PeercuitLogo } from "./PeercuitLogo";
 import { ThemeToggle } from "./ThemeToggle";
@@ -86,7 +86,7 @@ export function Navbar() {
                 key={item.id}
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.id)}
-                className={`relative px-3.5 py-2 text-sm font-medium transition-colors cursor-pointer ${
+                className={`relative px-4 py-2 text-sm font-medium transition-colors cursor-pointer rounded-lg hover:bg-slate-50 dark:hover:bg-emerald-500/10 ${
                   isActive
                     ? "text-[#0d623d] dark:text-emerald-400 font-semibold"
                     : "text-slate-600 dark:text-slate-300 hover:text-[#0d623d] dark:hover:text-emerald-400"
@@ -98,7 +98,7 @@ export function Navbar() {
                 {isActive && (
                   <motion.div
                     layoutId="active-nav-underline"
-                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-[#0d623d] dark:bg-emerald-400 rounded-full shadow-xs"
+                    className="absolute bottom-1 left-3 right-3 h-0.5 bg-[#0d623d] dark:bg-emerald-400 rounded-full shadow-xs"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -139,13 +139,13 @@ export function Navbar() {
           <UserNav />
           <Link
             href="/apply"
-            className="px-3 py-1.5 text-xs font-semibold text-white bg-[#0d623d] dark:bg-emerald-600 rounded-lg"
+            className="px-4 py-2 text-sm font-semibold text-white bg-[#0d623d] dark:bg-emerald-600 rounded-lg min-h-[44px] flex items-center justify-center"
           >
             Apply
           </Link>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 focus:outline-none cursor-pointer"
+            className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 focus:outline-none cursor-pointer"
             aria-label="Toggle menu"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -154,46 +154,56 @@ export function Navbar() {
       </div>
 
       {/* Mobile Drawer Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-white dark:bg-[#070e0a] border-b border-slate-200 dark:border-emerald-500/[0.15] px-4 py-6 space-y-4">
-          <nav className="flex flex-col space-y-2">
-            {NAV_ITEMS.map((item) => {
-              const isActive = pathname === "/" && activeSection === item.id;
-              return (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  onClick={(e) => handleNavClick(e, item.id)}
-                  className={`text-base font-medium py-1.5 px-3 rounded-lg flex items-center justify-between transition-colors ${
-                    isActive
-                      ? "text-[#0d623d] dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40"
-                      : "text-slate-700 dark:text-slate-200 hover:text-[#0d623d] dark:hover:text-emerald-400"
-                  }`}
-                >
-                  <span>{item.label}</span>
-                  {isActive && (
-                    <span className="w-2 h-2 rounded-full bg-[#0d623d] dark:bg-emerald-400" />
-                  )}
-                </Link>
-              );
-            })}
-            <div className="pt-2">
-              <Link
-                href="/apply"
-                onClick={() => setIsOpen(false)}
-                className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white rounded-xl ${
-                  pathname === "/apply"
-                    ? "bg-[#094d2f] dark:bg-emerald-500 ring-2 ring-emerald-400/40"
-                    : "bg-[#0d623d] dark:bg-emerald-600"
-                }`}
-              >
-                Apply to Join Peercuit
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="md:hidden overflow-hidden bg-white dark:bg-[#070e0a] border-b border-slate-200 dark:border-emerald-500/[0.15]"
+          >
+            <div className="px-4 py-6 space-y-4">
+              <nav className="flex flex-col space-y-1">
+                {NAV_ITEMS.map((item) => {
+                  const isActive = pathname === "/" && activeSection === item.id;
+                  return (
+                    <Link
+                      key={item.id}
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item.id)}
+                      className={`text-base font-medium py-3 px-4 rounded-lg min-h-[44px] flex items-center justify-between transition-colors ${
+                        isActive
+                          ? "text-[#0d623d] dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40"
+                          : "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-emerald-900/20 hover:text-[#0d623d] dark:hover:text-emerald-400"
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      {isActive && (
+                        <span className="w-2 h-2 rounded-full bg-[#0d623d] dark:bg-emerald-400" />
+                      )}
+                    </Link>
+                  );
+                })}
+                <div className="pt-4">
+                  <Link
+                    href="/apply"
+                    onClick={() => setIsOpen(false)}
+                    className={`w-full min-h-[44px] flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-white rounded-xl ${
+                      pathname === "/apply"
+                        ? "bg-[#094d2f] dark:bg-emerald-500 ring-2 ring-emerald-400/40"
+                        : "bg-[#0d623d] dark:bg-emerald-600"
+                    }`}
+                  >
+                    Apply to Join Peercuit
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </nav>
             </div>
-          </nav>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
