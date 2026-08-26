@@ -20,10 +20,7 @@ export const metadata: Metadata = {
   description:
     "The community for high school and college students to get honest feedback on their work, find like-minded peers, discover opportunities, and build things together.",
   icons: {
-    icon: [
-      { url: "/icon.png", type: "image/png" },
-      { url: "/favicon.ico" },
-    ],
+    icon: "/icon.png",
     shortcut: "/icon.png",
     apple: "/apple-icon.png",
   },
@@ -43,9 +40,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable}`}>
-      <head>
-        <link rel="icon" href="/icon.png" sizes="any" />
-      </head>
       <body className="min-h-screen antialiased">
         <ThemeProvider>
           <AuthProvider>{children}</AuthProvider>
