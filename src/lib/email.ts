@@ -1,11 +1,11 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { ApplicationInput } from "./schema";
 
-const resendApiKey = process.env.RESEND_API_KEY;
-const resend = resendApiKey ? new Resend(resendApiKey) : null;
+const SMTP_USER = process.env.SMTP_USER || "peercuit8@gmail.com";
+const SMTP_PASS = process.env.SMTP_PASS;
 
-const SENDER_EMAIL = process.env.FROM_EMAIL || "Peercuit Community <onboarding@resend.dev>";
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || process.env.NOTIFICATION_EMAIL || "team@peercuit.com";
+const SENDER_EMAIL = process.env.FROM_EMAIL || `Peercuit Community <${SMTP_USER}>`;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || process.env.NOTIFICATION_EMAIL || "peercuit8@gmail.com";
 
 interface EmailResult {
   success: boolean;
@@ -14,15 +14,33 @@ interface EmailResult {
   error?: string;
 }
 
-/**
- * Sends notification email to the community admin team
- * and an optional confirmation email to the applicant.
- */
+function getTransporter() {
+  if (!SMTP_PASS) return null;
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: SMTP_USER,
+      pass: SMTP_PASS,
+    },
+  });
+}
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 export async function sendApplicationNotification(
   data: ApplicationInput
 ): Promise<EmailResult> {
-  if (!resend) {
-    console.log("[Email Service] RESEND_API_KEY is not set. Simulating email notification for:", data.email);
+  const transporter = getTransporter();
+
+  if (!transporter) {
+    console.log("[Email Service] SMTP_PASS is not set. Simulating email notification for:", data.email);
     console.log(`[Email Preview to Admin: ${ADMIN_EMAIL}]
 --------------------------------------------------
 New Application Received:
@@ -44,7 +62,7 @@ ${data.whyJoin}
   }
 
   try {
-    // 1. Send Admin Notification
+    // 1. Send Admin Notification Email
     const adminEmailHtml = `
 <!DOCTYPE html>
 <html>
@@ -126,7 +144,7 @@ ${data.whyJoin}
 </html>
 `;
 
-    const adminResponse = await resend.emails.send({
+    const adminInfo = await transporter.sendMail({
       from: SENDER_EMAIL,
       to: ADMIN_EMAIL,
       subject: `⚡ New Peercuit Application: ${data.fullName} (${data.school})`,
@@ -189,7 +207,7 @@ ${data.whyJoin}
 </html>
 `;
 
-      await resend.emails.send({
+      await transporter.sendMail({
         from: SENDER_EMAIL,
         to: data.email,
         subject: `We've received your Peercuit application! 🚀`,
@@ -199,19 +217,10 @@ ${data.whyJoin}
       console.warn("[Email Service] Failed to send applicant confirmation email (non-critical):", applicantErr);
     }
 
-    return { success: true, messageId: adminResponse.data?.id };
+    return { success: true, messageId: adminInfo.messageId };
   } catch (error: unknown) {
     const err = error as Error;
-    console.error("[Email Service] Resend dispatch error:", err);
+    console.error("[Email Service] Nodemailer dispatch error:", err);
     return { success: false, error: err.message || "Failed to send email notification" };
   }
-}
-
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
 }
