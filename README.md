@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ⚡ Peercuit — Student Builder Community Website
 
-## Getting Started
+> **Positioning:** Peercuit is a curated community for high school and college students to find like-minded peers, receive real feedback on their work, discover opportunities, and build things together.
 
-First, run the development server:
+---
 
+## ✨ Features & Architecture
+
+- **Brand & Theme**:
+  - **Actual Logo**: Rendered across Navbar, Footer, and Favicon/Meta using [`public/logo.png`](public/logo.png).
+  - **Dedicated Light & Dark Modes**: Complete tailored color palettes (no CSS color inversions) with a Sun/Moon toggle.
+  - **Honest Principles**: Transparent community metrics with zero fake testimonials.
+
+- **Authentication (Firebase Google Auth)**:
+  - **Google Sign-In**: Powered by Firebase Auth with one-click popup authentication.
+  - **Autofill Form**: Students can one-click sign in with Google to pre-fill their name, email, and link their application ID.
+  - **User Navigation**: Dropdown menu in header with avatar, email display, and sign-out.
+
+- **Database (Supabase)**:
+  - **First-Class Storage**: Automatically stores submissions into Supabase PostgreSQL `applications` table.
+  - **Graceful Fallback**: Automatically saves to local persistent JSON (`data/submissions.json`) if Supabase is unconfigured in development.
+  - **SQL Migration**: Included in [`supabase/schema.sql`](supabase/schema.sql).
+
+- **Transactional Email (Resend)**:
+  - Admin notification email with full applicant breakdown.
+  - Confirmation receipt email sent to the applicant.
+  - Safe terminal mock preview in development when API key is unset.
+
+---
+
+## 🚀 Setup & Environment Variables
+
+### 1. Install Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure Environment Variables
+Copy `.env.example` to `.env.local`:
+```bash
+cp .env.example .env.local
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Fill in your service keys:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+# Resend Email (https://resend.com)
+RESEND_API_KEY=re_your_resend_api_key
+ADMIN_EMAIL=team@peercuit.com
+FROM_EMAIL=Peercuit Community <onboarding@resend.dev>
 
-## Learn More
+# Firebase Google Auth (https://console.firebase.google.com)
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 
-To learn more about Next.js, take a look at the following resources:
+# Supabase Database (https://supabase.com)
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3. Initialize Supabase Database
+In your Supabase Dashboard:
+1. Open the **SQL Editor**.
+2. Paste and run the contents of [`supabase/schema.sql`](supabase/schema.sql).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 💻 Development & Production
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Start Development Server
+npm run dev
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Build for Production
+npm run build
+npm run start
+```

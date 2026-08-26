@@ -1,69 +1,95 @@
-import Image from "next/image";
+import React from "react";
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, Cpu } from "lucide-react";
+import { Navbar } from "@/components/Navbar";
+import { Hero } from "@/components/Hero";
+import { ValueProps } from "@/components/ValueProps";
+import { HowItWorks } from "@/components/HowItWorks";
+import { Rituals } from "@/components/Rituals";
+import { SocialProof } from "@/components/SocialProof";
+import { FAQ } from "@/components/FAQ";
+import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="min-h-screen bg-white dark:bg-[#050806] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-[#0d623d] selection:text-white dark:selection:bg-emerald-500 transition-colors duration-200">
+      <Navbar />
+
+      <main className="flex-grow">
+        {/* 1. Hero Section */}
+        <Hero />
+
+        {/* 2. What You Get (Value Props) */}
+        <ValueProps />
+
+        {/* 3. How It Works (3 Steps) */}
+        <HowItWorks />
+
+        {/* 4. Weekly Rituals */}
+        <Rituals />
+
+        {/* 5. Honest Principles & Community Metrics */}
+        <SocialProof />
+
+        {/* 6. Mid-Page Big CTA Section */}
+        <section className="py-20 relative overflow-hidden">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="relative rounded-3xl p-8 sm:p-12 md:p-16 bg-emerald-50 dark:bg-gradient-to-r dark:from-emerald-950/80 dark:via-[#07130c]/90 dark:to-emerald-950/80 border border-emerald-200 dark:border-emerald-500/30 shadow-xl overflow-hidden text-center">
+              <div className="absolute top-0 right-0 w-72 h-72 radial-glow-emerald opacity-50 pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-72 h-72 radial-glow-green opacity-40 pointer-events-none" />
+
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-900 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-5 border border-emerald-300 dark:border-emerald-500/30">
+                <Cpu className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400" />
+                Applications Open for Cohort 4
+              </div>
+
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight max-w-2xl mx-auto mb-4">
+                Don&apos;t build your next idea in isolation.
+              </h2>
+
+              <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl mx-auto mb-8">
+                Join a community of ambitious high school and college students who will test your projects, give honest critique, and team up with you.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link
+                  href="/apply"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-bold text-white bg-[#0d623d] hover:bg-[#094d2f] dark:bg-gradient-to-r dark:from-emerald-600 dark:to-teal-600 dark:hover:from-emerald-500 dark:hover:to-teal-500 rounded-xl shadow-xl shadow-emerald-900/15 dark:shadow-emerald-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  Apply to Join Peercuit
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+                <Link
+                  href="#faq"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-white hover:bg-slate-100 dark:bg-emerald-950/50 dark:hover:bg-emerald-950/80 border border-slate-200 dark:border-emerald-500/25 rounded-xl transition-all shadow-xs"
+                >
+                  Read Student FAQs
+                </Link>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-xs text-slate-600 dark:text-slate-400 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-[#0d623d] dark:text-emerald-400" />
+                  100% Free Forever
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-[#0d623d] dark:text-emerald-400" />
+                  2-Minute Application
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-[#0d623d] dark:text-emerald-400" />
+                  Reviewed in 24-48 Hours
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 7. FAQ */}
+        <FAQ />
       </main>
+
+      <Footer />
     </div>
   );
 }
