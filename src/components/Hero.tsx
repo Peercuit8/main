@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -16,8 +16,6 @@ import {
 } from "lucide-react";
 
 export function Hero() {
-  const [activeTab, setActiveTab] = useState<"feedback" | "teams" | "demos">("feedback");
-
   return (
     <section className="relative pt-32 pb-20 md:pt-36 md:pb-24 overflow-hidden">
       {/* Background glowing ambient lighting */}
@@ -92,7 +90,7 @@ export function Hero() {
             </Link>
           </motion.div>
 
-          {/* Interactive Community Terminal Hub */}
+          {/* Community Stream Hub */}
           <motion.div
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
@@ -105,12 +103,12 @@ export function Hero() {
                 <div className="w-3 h-3 rounded-full bg-amber-500/80" />
                 <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
                 <span className="text-xs font-mono text-slate-700 dark:text-emerald-400/90 ml-2 font-bold">
-                  peercuit-terminal &bull; live student channels
+                  peercuit-circle &bull; live community activity
                 </span>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-[#0d623d] dark:text-emerald-400 font-mono font-bold bg-emerald-100 dark:bg-emerald-950/80 px-2.5 py-1 rounded-md border border-emerald-200 dark:border-emerald-500/20">
                 <span className="w-2 h-2 rounded-full bg-[#0d623d] dark:bg-emerald-400 animate-pulse" />
-                <span>68 students online</span>
+                <span>68 student builders active</span>
               </div>
             </div>
 
@@ -120,7 +118,7 @@ export function Hero() {
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                     <Code2 className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400" />
-                    #roast-my-ui
+                    Project Critique
                   </span>
                   <span className="text-[10px] font-bold text-emerald-800 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-300 dark:border-emerald-500/20">
                     Feedback
@@ -140,7 +138,7 @@ export function Hero() {
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                     <Users className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-                    #find-teammates
+                    Teammate Matching
                   </span>
                   <span className="text-[10px] font-bold text-teal-800 dark:text-teal-400 bg-teal-100 dark:bg-teal-500/10 px-2 py-0.5 rounded border border-teal-300 dark:border-teal-500/20">
                     Hackathons
@@ -160,10 +158,10 @@ export function Hero() {
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                     <Activity className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                    #sunday-demos
+                    Sunday Demos
                   </span>
                   <span className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-300 dark:border-emerald-500/20">
-                    Weekly Voice
+                    Weekly Live
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">

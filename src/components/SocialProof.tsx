@@ -20,7 +20,7 @@ const COMMUNITY_PILLARS = [
     icon: Shield,
     title: "100% Free & Curated",
     description:
-      "Zero paywalls, courses, or hidden fees. We keep the WhatsApp & Discord groups curated to maintain high signal-to-noise ratio.",
+      "Zero paywalls, courses, or hidden fees. We keep our WhatsApp Community curated to maintain high signal-to-noise ratio.",
   },
 ];
 
@@ -28,7 +28,7 @@ const STATS = [
   { label: "Community Access", value: "$0 Free" },
   { label: "Review Turnaround", value: "24-48h" },
   { label: "High School & College", value: "All Years" },
-  { label: "Format", value: "WhatsApp & Discord" },
+  { label: "Format", value: "WhatsApp Community" },
 ];
 
 export function SocialProof() {

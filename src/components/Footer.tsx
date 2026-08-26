@@ -136,14 +136,12 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a
-                  href="https://discord.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors flex items-center gap-1.5"
+                <Link
+                  href="/apply"
+                  className="hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors flex items-center gap-1.5 font-semibold text-[#0d623d] dark:text-emerald-400"
                 >
-                  <span>Discord Community</span>
-                </a>
+                  <span>Join WhatsApp Circle</span>
+                </Link>
               </li>
             </ul>
           </div>

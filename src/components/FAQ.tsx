@@ -22,7 +22,7 @@ const FAQS = [
   },
   {
     q: "Where does the community live?",
-    a: "We have an active WhatsApp group for quick announcements and daily banter, plus an organized Discord server for themed channels (#roast-my-ui, #teammates, #opportunities, #code-help, #general).",
+    a: "We have an active, curated WhatsApp Community with themed sub-groups for project feedback, teammate matching, opportunity alerts, and weekly Sunday Demo Nights.",
   },
   {
     q: "I'm in high school — will I fit in with college students?",

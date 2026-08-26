@@ -107,10 +107,10 @@ export function ConfirmationCard({
 
           <div className="p-3 rounded-lg bg-white dark:bg-[#0d1c14] border border-slate-200 dark:border-emerald-500/20 shadow-xs">
             <div className="text-xs font-mono font-bold text-[#0d623d] dark:text-emerald-300 mb-1">
-              Step 2 &bull; WhatsApp / Discord
+              Step 2 &bull; WhatsApp Community
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-300">
-              You&apos;ll get a private invite link directly to our groups.
+              You&apos;ll get a private invite link directly to our WhatsApp community group.
             </p>
           </div>
 
