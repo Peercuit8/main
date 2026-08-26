@@ -6,26 +6,33 @@ import {
   MessageSquareCode,
   Users2,
   Compass,
-  CalendarCheck,
-  Check,
-  Zap,
-  Terminal,
+  Trophy,
+  BookOpen,
+  DollarSign,
+  Award,
+  Sparkles,
   Flame,
   Radio,
+  Check,
+  Zap,
+  TrendingUp,
+  BrainCircuit,
+  Globe2,
+  Coffee,
 } from "lucide-react";
 
 const BENEFITS = [
   {
     step: "01",
     icon: MessageSquareCode,
-    badge: "Honest & Constructive",
-    title: "Peer feedback on your work",
-    tagline: "No polite sugarcoating. Real, actionable critiques.",
+    badge: "Feedback & Roast Threads",
+    title: "Showcase work for real peer feedback",
+    tagline: "Granular UI, code, and copy reviews before public launch.",
     description:
-      "Tired of posting your side projects into the void or getting polite 'looks good' from friends? Get granular, honest feedback from fellow student engineers, UI designers, and writers who actually understand the craft.",
+      "Tired of posting side projects into the void? Get real, actionable critique from fellow student engineers, UI designers, and writers who understand the craft.",
     highlights: [
       "Roast-my-project critique threads",
-      "UI/UX and code architectural reviews",
+      "UI/UX and architectural code reviews",
       "Actionable fixes before you launch publicly",
     ],
     preview: {
@@ -37,71 +44,96 @@ const BENEFITS = [
   },
   {
     step: "02",
-    icon: Users2,
-    badge: "Break the Campus Bubble",
-    title: "Meet like-minded students",
-    tagline: "Find peers who share your specific obsessions.",
+    icon: BrainCircuit,
+    badge: "AI & Finance Playbooks",
+    title: "Actionable AI tips & student finance",
+    tagline: "Master modern AI builder workflows & personal money management.",
     description:
-      "Most schools have only a handful of people who share your passion for shipping. Peercuit connects you with curious, self-starter peers across high schools and colleges who love building cool stuff.",
+      "Cut through the hype with curated playbooks on using AI agents, LLMs, and automation in your projects, alongside student-first personal finance tips (budgeting, investing basics, and freelance pricing).",
     highlights: [
-      "Find hackathon & project co-builders",
-      "High school & college level collaboration",
-      "Zero networking cringe — just genuine friends",
+      "Modern AI agent & prompt engineering guides",
+      "Student budgeting & first-dollar freelance guides",
+      "Curated toolkits and API cost optimization",
     ],
     preview: {
-      type: "network",
-      title: "Skill-Based Teammate Matching",
-      badge: "Co-Builder Hub",
-      roles: [
-        { title: "Full-Stack Devs", stack: "Next.js, TypeScript, Supabase", focus: "Building web apps & SaaS" },
-        { title: "AI & ML Builders", stack: "Python, PyTorch, LangChain", focus: "Agents & automation models" },
-        { title: "UI/UX Designers", stack: "Figma, Tailwind, Prototyping", focus: "Design systems & wireframes" },
+      type: "playbook",
+      title: "Builder Knowledge Vault",
+      badge: "Curated Guides",
+      items: [
+        { label: "AI Workflows", desc: "Local LLMs, LangChain, & Cursor automation" },
+        { label: "Personal Finance", desc: "Student budgeting, taxes, & side-income basics" },
+        { label: "Tool Radar", desc: "Free tier student developer packs & API credits" },
       ],
-      status: "Matched by complementary skills",
     },
   },
   {
     step: "03",
-    icon: Compass,
-    badge: "Curated Opportunities",
-    title: "Discover hackathons & collabs",
-    tagline: "High-impact grants, bounties, and student comps.",
+    icon: Trophy,
+    badge: "Competitions & Hackathons",
+    title: "Meet teams & compete in Peercuit comps",
+    tagline: "Find partners for external hackathons or win internal sprints.",
     description:
-      "We scout the best student opportunities so you don't miss out. Discover high-impact hackathons, student grant funds, open-source bounties, and early internship opportunities before everyone else.",
+      "Never enter a competition alone. Find complementary teammates for major hackathons, or compete directly in internal Peercuit sprint challenges and prize bounties.",
     highlights: [
-      "Curated student hackathon tracker",
-      "Grants, fellowship & incubator alerts",
-      "Collab board for cross-disciplinary builds",
+      "Find hackathon & comp co-builders",
+      "Peercuit-hosted internal hackathons & sprints",
+      "Curated external grants & bounty radar",
     ],
     preview: {
       type: "bounty",
-      title: "Student Opportunity Radar",
-      badge: "Verified Comp",
-      event: "Global Student Hackathons & AI Tracks",
-      prize: "Grants, cash prizes & builder bounties",
-      status: "Curated student competitions",
+      title: "Internal Comps & Hackathons",
+      badge: "Peercuit Sprints",
+      event: "48-Hour Peercuit Builder Sprint",
+      prize: "Cash prizes, grants & verified showcase",
+      status: "Teammate matching open",
     },
   },
   {
     step: "04",
-    icon: CalendarCheck,
-    badge: "Weekly Momentum",
-    title: "Weekly community rituals",
-    tagline: "Lightweight, high-energy sessions that keep you shipping.",
+    icon: BookOpen,
+    badge: "Quarterly Publication",
+    title: "Quarter-end student magazine",
+    tagline: "Publish your essays, teardowns, and founder stories.",
     description:
-      "Building alone can be isolating. Our regular asynchronous and live rituals keep you shipping consistently, talking through bold ideas, and learning from other students' breakthroughs.",
+      "At the end of every quarter, we publish the official Peercuit Student Magazine. Write deep-dive essays, technical project teardowns, and builder stories that get read across schools and universities.",
     highlights: [
-      "Sunday 15-min Demo Nights",
-      "Spicy student tech & philosophy debates",
-      "1-on-1 virtual peer coffee chats",
+      "Quarterly published digital magazine",
+      "In-depth student project teardowns & essays",
+      "Build your public writing & research portfolio",
     ],
     preview: {
-      type: "demo",
-      title: "Sunday Demo Night",
-      badge: "Live Audio & Screen Share",
-      time: "Every Sunday 8:00 PM EST / 5:30 AM IST",
-      demos: "Live lightning demos and open Q&A",
-      status: "Weekly progress celebration",
+      type: "magazine",
+      title: "Peercuit Quarterly — Issue 01",
+      badge: "Student Publication",
+      articles: [
+        { title: "Building Local AI Agents on a Student Budget", tag: "Engineering" },
+        { title: "Design Systems That Actually Convert", tag: "UI/UX" },
+        { title: "From School Hackathon to 1,000 Users", tag: "Case Study" },
+      ],
+    },
+  },
+  {
+    step: "05",
+    icon: Award,
+    badge: "Ambassadors & Reputation",
+    title: "Campus ambassadors & reputation points",
+    tagline: "Earn Builder Karma and represent Peercuit at your campus.",
+    description:
+      "Lead Peercuit at your high school or college campus as an official Campus Ambassador. Earn reputation points (Builder Karma) for reviewing peers' work, shipping builds, and helping the community.",
+    highlights: [
+      "Campus Ambassador leadership opportunities",
+      "Builder Karma & reputation points system",
+      "Unlock perks, featured spotlights, and grant access",
+    ],
+    preview: {
+      type: "karma",
+      title: "Builder Karma & Reputation System",
+      badge: "Merit-Based",
+      metrics: [
+        { label: "Constructive Review", points: "+25 Karma" },
+        { label: "Shipped Project Demo", points: "+50 Karma" },
+        { label: "Campus Ambassador", points: "Leader Badge" },
+      ],
     },
   },
 ];
@@ -123,7 +155,7 @@ export function ValueProps() {
       const currentScroll = -rect.top;
       const progress = Math.max(0, Math.min(1, currentScroll / totalScrollable));
 
-      const index = Math.min(3, Math.floor(progress * 4));
+      const index = Math.min(BENEFITS.length - 1, Math.floor(progress * BENEFITS.length));
       setActiveIndex(index);
     };
 
@@ -136,7 +168,7 @@ export function ValueProps() {
   const ActiveIcon = activeItem.icon;
 
   return (
-    <section ref={containerRef} id="benefits" className="relative min-h-[300vh] py-16">
+    <section ref={containerRef} id="benefits" className="relative min-h-[320vh] py-16">
       {/* Sticky viewport */}
       <div className="sticky top-20 min-h-[85vh] flex flex-col justify-center overflow-hidden py-4">
         {/* Ambient Neon Lighting */}
@@ -144,31 +176,20 @@ export function ValueProps() {
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300/80 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-2.5 shadow-xs">
-                <Zap className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400 animate-pulse" />
-                Community Benefits
-              </div>
-              <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
-                Everything you need to <span className="gradient-text-primary">level up together</span>.
-              </h2>
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300/80 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-2.5 shadow-xs">
+              <Zap className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400 animate-pulse" />
+              What We Do in Peercuit
             </div>
-
-            {/* Live Step Tracker Pill */}
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-700 dark:text-emerald-300 bg-white/90 dark:bg-[#07140c] px-4 py-2 rounded-full border border-emerald-300/80 dark:border-emerald-500/30 shadow-md">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#0d623d] dark:bg-emerald-400 animate-ping" />
-              <span className="font-bold">Scroll through benefits</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold ml-1">
-                [{activeIndex + 1} / {BENEFITS.length}]
-              </span>
-            </div>
+            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+              Everything you need to <span className="gradient-text-primary">level up together</span>.
+            </h2>
           </div>
 
           {/* Interactive HUD Showcase Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left Column: Interactive Navigation Bars */}
-            <div className="lg:col-span-4 space-y-3.5">
+            <div className="lg:col-span-4 space-y-3">
               {BENEFITS.map((item, idx) => {
                 const isActive = activeIndex === idx;
                 const Icon = item.icon;
@@ -177,15 +198,15 @@ export function ValueProps() {
                     key={idx}
                     type="button"
                     onClick={() => setActiveIndex(idx)}
-                    className={`w-full text-left p-4 rounded-2xl transition-all duration-300 cursor-pointer relative overflow-hidden group ${
+                    className={`w-full text-left p-3.5 sm:p-4 rounded-2xl transition-all duration-300 cursor-pointer relative overflow-hidden group ${
                       isActive
                         ? "glass-card border-2 border-emerald-500 shadow-xl shadow-emerald-950/15 scale-[1.02]"
                         : "glass-card border border-emerald-900/10 dark:border-emerald-500/15 opacity-60 hover:opacity-100 hover:border-emerald-400/50"
                     }`}
                   >
-                    <div className="flex items-center gap-3.5">
+                    <div className="flex items-center gap-3">
                       <div
-                        className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 font-bold text-xs transition-colors duration-300 shadow-xs ${
+                        className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 font-bold text-xs transition-colors duration-300 shadow-xs ${
                           isActive
                             ? "bg-[#0d623d] text-white dark:bg-emerald-500 shadow-emerald-500/30"
                             : "bg-emerald-100 dark:bg-emerald-950/80 text-[#0d623d] dark:text-emerald-400"
@@ -278,7 +299,7 @@ export function ValueProps() {
                         <div>
                           <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 pb-2 mb-2 border-b border-emerald-500/15">
                             <span className="text-[#0d623d] dark:text-emerald-400 font-bold flex items-center gap-1.5">
-                              <Terminal className="w-3.5 h-3.5" />
+                              <MessageSquareCode className="w-3.5 h-3.5" />
                               {activeItem.preview.title}
                             </span>
                             <span className="text-[11px] bg-emerald-100 dark:bg-emerald-500/15 text-[#0d623d] dark:text-emerald-300 px-2 py-0.5 rounded-md font-semibold">
@@ -291,26 +312,25 @@ export function ValueProps() {
                         </div>
                       )}
 
-                      {activeItem.preview.type === "network" && (
+                      {activeItem.preview.type === "playbook" && (
                         <div className="space-y-2.5">
                           <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 pb-1">
                             <span className="text-[#0d623d] dark:text-emerald-400 font-bold flex items-center gap-1.5">
-                              <Users2 className="w-3.5 h-3.5" />
+                              <BrainCircuit className="w-3.5 h-3.5" />
                               {activeItem.preview.title}
                             </span>
                             <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-400">
-                              {activeItem.preview.status}
+                              {activeItem.preview.badge}
                             </span>
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                            {activeItem.preview.roles?.map((role, rIdx) => (
+                            {activeItem.preview.items?.map((item, itIdx) => (
                               <div
-                                key={rIdx}
+                                key={itIdx}
                                 className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#08160d] border border-emerald-300/60 dark:border-emerald-500/20 text-xs shadow-xs"
                               >
-                                <p className="font-bold text-slate-900 dark:text-white">{role.title}</p>
-                                <p className="text-[11px] text-slate-500 dark:text-slate-400">{role.stack}</p>
-                                <p className="text-[10px] font-bold text-[#0d623d] dark:text-emerald-400 mt-1">{role.focus}</p>
+                                <p className="font-bold text-slate-900 dark:text-white">{item.label}</p>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{item.desc}</p>
                               </div>
                             ))}
                           </div>
@@ -321,7 +341,7 @@ export function ValueProps() {
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-1.5">
                           <div>
                             <span className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                              <Flame className="w-4 h-4 text-amber-500" />
+                              <Trophy className="w-4 h-4 text-amber-500" />
                               {activeItem.preview.event}
                             </span>
                             <p className="text-xs text-[#0d623d] dark:text-emerald-400 font-bold mt-0.5">
@@ -334,20 +354,57 @@ export function ValueProps() {
                         </div>
                       )}
 
-                      {activeItem.preview.type === "demo" && (
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-1.5">
-                          <div>
-                            <span className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                              <Radio className="w-4 h-4 text-[#0d623d] dark:text-emerald-400 animate-pulse" />
+                      {activeItem.preview.type === "magazine" && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 pb-1">
+                            <span className="text-[#0d623d] dark:text-emerald-400 font-bold flex items-center gap-1.5">
+                              <BookOpen className="w-3.5 h-3.5" />
                               {activeItem.preview.title}
                             </span>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                              {activeItem.preview.time}
-                            </p>
+                            <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-400">
+                              {activeItem.preview.badge}
+                            </span>
                           </div>
-                          <span className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/25">
-                            {activeItem.preview.demos}
-                          </span>
+                          <div className="space-y-1.5">
+                            {activeItem.preview.articles?.map((art, aIdx) => (
+                              <div
+                                key={aIdx}
+                                className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-[#08160d] border border-emerald-300/40 dark:border-emerald-500/15 text-xs"
+                              >
+                                <span className="font-semibold text-slate-900 dark:text-slate-200 truncate pr-2">
+                                  {art.title}
+                                </span>
+                                <span className="text-[10px] bg-emerald-100 dark:bg-emerald-500/20 text-[#0d623d] dark:text-emerald-300 px-2 py-0.5 rounded font-bold shrink-0">
+                                  {art.tag}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {activeItem.preview.type === "karma" && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 pb-1">
+                            <span className="text-[#0d623d] dark:text-emerald-400 font-bold flex items-center gap-1.5">
+                              <Award className="w-3.5 h-3.5 text-amber-500" />
+                              {activeItem.preview.title}
+                            </span>
+                            <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-400">
+                              {activeItem.preview.badge}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            {activeItem.preview.metrics?.map((m, mIdx) => (
+                              <div
+                                key={mIdx}
+                                className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#08160d] border border-emerald-300/60 dark:border-emerald-500/20 text-xs text-center shadow-xs"
+                              >
+                                <p className="font-bold text-slate-900 dark:text-white">{m.label}</p>
+                                <p className="text-xs font-black text-[#0d623d] dark:text-emerald-400 mt-1">{m.points}</p>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>

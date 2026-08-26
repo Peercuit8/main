@@ -17,16 +17,20 @@ const FAQS = [
     a: "Open invite links get overrun by spammers, promo bots, and inactive lurkers. We run a 2-minute application to keep the vibe safe, welcoming, and focused on genuine student builders.",
   },
   {
-    q: "How much time do I need to commit?",
-    a: "As much or as little as fits around your school or college workload. Some members drop by once a week for Sunday Demo Night or to get quick feedback, while others hang out on voice channels regularly.",
+    q: "Where does the community live?",
+    a: "We have an active, curated WhatsApp Community with themed sub-groups for project feedback, teammate matching for hackathons, opportunity alerts, and weekly Sunday Demo Nights.",
   },
   {
-    q: "Where does the community live?",
-    a: "We have an active, curated WhatsApp Community with themed sub-groups for project feedback, teammate matching, opportunity alerts, and weekly Sunday Demo Nights.",
+    q: "How do the Campus Ambassador program & Builder Karma points work?",
+    a: "Members earn Builder Karma (reputation points) for constructive peer reviews, shipping project demos, and helping peers. Campus Ambassadors represent Peercuit at their school or university, organize local build meetups, and receive leadership recognition.",
+  },
+  {
+    q: "Can I write for the Quarterly Student Magazine?",
+    a: "Yes! At the end of each quarter, any member can submit deep-dive technical articles, project post-mortems, design essays, or founder stories to be reviewed and published in our official digital magazine.",
   },
   {
     q: "I'm in high school — will I fit in with college students?",
-    a: "Absolutely! Many of our most active and talented builders are in 9th-12th grade. We also have dedicated high school channels alongside mixed collab rooms for hackathons.",
+    a: "Absolutely! Many of our most active and talented builders are in 9th-12th grade. We have mixed collaboration rooms for hackathons and dedicated sub-groups tailored for high school builders.",
   },
 ];
 
@@ -49,7 +53,7 @@ export function FAQ() {
             Frequently Asked Questions
           </h2>
           <p className="text-slate-600 dark:text-slate-300 text-base">
-            Everything you need to know about joining and building in Peercuit.
+            Everything you need to know about joining, building, and publishing in Peercuit.
           </p>
         </div>
 

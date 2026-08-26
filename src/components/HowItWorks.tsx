@@ -104,7 +104,7 @@ export function HowItWorks() {
               How to join <span className="gradient-text-primary">Peercuit</span>
             </h2>
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-2">
-              Scroll through the 3 simple steps to find your circle.
+              From application to your first community demo in 3 simple steps.
             </p>
           </div>
 
