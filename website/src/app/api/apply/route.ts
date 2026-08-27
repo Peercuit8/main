@@ -3,6 +3,7 @@ import { applicationSchema } from "@/lib/schema";
 import { saveApplication, getApplicationCount } from "@/lib/storage";
 import { sendApplicationNotification } from "@/lib/email";
 import { supabase } from "@/lib/supabase";
+import { isApplicationsOpen } from "@/lib/applications";
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,8 +11,8 @@ export async function POST(request: NextRequest) {
     if (supabase) {
       try {
         const { data, error } = await supabase.from('settings').select('value').eq('key', 'applications_open').single();
-        if (!error && data && data.value !== undefined && data.value !== null) {
-          const isOpen = data.value === true || data.value === 'true' || data.value === 1 || data.value === '1';
+        if (!error && data && data.value !== undefined) {
+          const isOpen = isApplicationsOpen(data.value);
           if (!isOpen) {
             return NextResponse.json(
               {

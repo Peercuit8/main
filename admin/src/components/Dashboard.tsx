@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Users, Mail, CheckCircle, XCircle, Clock, Loader2, RefreshCw } from 'lucide-react'
+import { Users, Mail, CheckCircle, XCircle, Clock, Loader2, RefreshCw, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -25,10 +25,11 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
   const [responses, setResponses] = useState<ResponseRow[]>(initialResponses)
   const [loadingAction, setLoadingAction] = useState<string | null>(null)
   const [matching, setMatching] = useState(false)
+  const [selectedResponse, setSelectedResponse] = useState<ResponseRow | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
-  const handleAction = async (id: string, action: 'accept' | 'reject', email: string) => {
+  const handleAction = async (id: string, action: 'accept' | 'reject' | 'delete', email: string) => {
     setLoadingAction(id)
     try {
       const res = await fetch('/api/response', {
@@ -39,7 +40,11 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
       if (!res.ok) throw new Error('Action failed')
       
       // Update local state to feel snappy
-      setResponses(prev => prev.map(r => r.id === id ? { ...r, status: action === 'accept' ? 'accepted' : 'rejected' } : r))
+      if (action === 'delete') {
+        setResponses(prev => prev.filter(r => r.id !== id))
+      } else {
+        setResponses(prev => prev.map(r => r.id === id ? { ...r, status: action === 'accept' ? 'accepted' : 'rejected' } : r))
+      }
     } catch (error) {
       alert('Error performing action. See console.')
       console.error(error)
@@ -220,7 +225,7 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
                 {filteredResponses.map(res => {
                   const isDuplicate = emailCounts[res.email] > 1;
                   return (
-                  <tr key={res.id} className="hover:bg-bg-surface/50 transition-colors group">
+                  <tr key={res.id} onClick={() => setSelectedResponse(res)} className="hover:bg-bg-surface/50 transition-colors group cursor-pointer">
                     <td className="p-5 font-medium text-text-primary">
                       <div className="flex flex-col gap-1 items-start">
                         <span className="font-semibold">{res.full_name || 'N/A'}</span>
@@ -262,26 +267,41 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
                       )}
                     </td>
                     <td className="p-5 text-right">
-                      {res.status === 'pending' ? (
-                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button 
-                            disabled={loadingAction === res.id}
-                            onClick={() => handleAction(res.id, 'accept', res.email)}
-                            className="bg-brand-mint-bg text-brand-mint-text px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-brand-green-primary hover:text-white transition-colors disabled:opacity-50"
-                          >
-                            Accept
-                          </button>
-                          <button 
-                            disabled={loadingAction === res.id}
-                            onClick={() => handleAction(res.id, 'reject', res.email)}
-                            className="bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-red-600 hover:text-white transition-colors disabled:opacity-50"
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      ) : (
-                        <span className="text-text-muted text-sm italic">Resolved</span>
-                      )}
+                      <div className="flex justify-end items-center gap-2">
+                        {res.status === 'pending' ? (
+                          <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button 
+                              disabled={loadingAction === res.id}
+                              onClick={(e) => { e.stopPropagation(); handleAction(res.id, 'accept', res.email); }}
+                              className="bg-brand-mint-bg text-brand-mint-text px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-brand-green-primary hover:text-white transition-colors disabled:opacity-50"
+                            >
+                              Accept
+                            </button>
+                            <button 
+                              disabled={loadingAction === res.id}
+                              onClick={(e) => { e.stopPropagation(); handleAction(res.id, 'reject', res.email); }}
+                              className="bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-red-600 hover:text-white transition-colors disabled:opacity-50"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-text-muted text-sm italic mr-2">Resolved</span>
+                        )}
+                        <button
+                          title="Delete Application"
+                          disabled={loadingAction === res.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (confirm('Are you sure you want to permanently delete this application?')) {
+                              handleAction(res.id, 'delete', res.email);
+                            }
+                          }}
+                          className="text-red-400 hover:text-red-600 dark:hover:text-red-300 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors disabled:opacity-50 opacity-0 group-hover:opacity-100"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                   )
@@ -298,6 +318,123 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
           </div>
         </div>
       </div>
+
+      {selectedResponse && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setSelectedResponse(null)}>
+          <div className="bg-bg-card rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 md:p-8 relative border border-border-card" onClick={e => e.stopPropagation()}>
+            <button 
+              className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors"
+              onClick={() => setSelectedResponse(null)}
+            >
+              <XCircle className="w-6 h-6" />
+            </button>
+            <h2 className="text-2xl font-bold mb-6 text-text-primary">Application Details</h2>
+            
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs text-text-muted uppercase font-semibold tracking-wider">Name</label>
+                  <p className="text-text-primary font-medium mt-1">{selectedResponse.full_name || 'N/A'}</p>
+                </div>
+                <div>
+                  <label className="text-xs text-text-muted uppercase font-semibold tracking-wider">Email</label>
+                  <p className="text-text-primary font-medium mt-1">{selectedResponse.email}</p>
+                </div>
+                <div>
+                  <label className="text-xs text-text-muted uppercase font-semibold tracking-wider">School</label>
+                  <p className="text-text-primary font-medium mt-1">{selectedResponse.school || 'N/A'}</p>
+                </div>
+                <div>
+                  <label className="text-xs text-text-muted uppercase font-semibold tracking-wider">Grade</label>
+                  <p className="text-text-primary font-medium mt-1">{selectedResponse.grade || 'N/A'}</p>
+                </div>
+                <div>
+                  <label className="text-xs text-text-muted uppercase font-semibold tracking-wider">Location</label>
+                  <p className="text-text-primary font-medium mt-1">{selectedResponse.location || 'N/A'}</p>
+                </div>
+                <div>
+                  <label className="text-xs text-text-muted uppercase font-semibold tracking-wider">Status</label>
+                  <p className="text-text-primary font-medium mt-1 capitalize">{selectedResponse.status}</p>
+                </div>
+              </div>
+              
+              <div>
+                <label className="text-xs text-text-muted uppercase font-semibold tracking-wider">Current Work / Interests</label>
+                <div className="mt-2 p-4 rounded-xl bg-bg-surface border border-border-card text-text-secondary whitespace-pre-wrap text-sm leading-relaxed">
+                  {selectedResponse.current_work || 'N/A'}
+                </div>
+              </div>
+              
+              <div>
+                <label className="text-xs text-text-muted uppercase font-semibold tracking-wider">Why Join Peercuit</label>
+                <div className="mt-2 p-4 rounded-xl bg-bg-surface border border-border-card text-text-secondary whitespace-pre-wrap text-sm leading-relaxed">
+                  {selectedResponse.why_join || 'N/A'}
+                </div>
+              </div>
+              
+              <div>
+                <label className="text-xs text-text-muted uppercase font-semibold tracking-wider">Interests</label>
+                <div className="mt-2 text-sm text-text-secondary">
+                  {selectedResponse.interests && selectedResponse.interests.length > 0 
+                    ? selectedResponse.interests.join(', ') 
+                    : 'N/A'}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs text-text-muted uppercase font-semibold tracking-wider">Portfolio / Links</label>
+                <div className="mt-2 text-sm">
+                  {selectedResponse.portfolio_link ? (
+                    <a href={selectedResponse.portfolio_link} target="_blank" rel="noopener noreferrer" className="text-brand-green-primary hover:underline font-medium break-all">
+                      {selectedResponse.portfolio_link}
+                    </a>
+                  ) : (
+                    <span className="text-text-muted">N/A</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="pt-4 flex items-center justify-between border-t border-border-card mt-6">
+                <button
+                  disabled={loadingAction === selectedResponse.id}
+                  onClick={() => {
+                    if (confirm('Are you sure you want to permanently delete this application?')) {
+                      handleAction(selectedResponse.id, 'delete', selectedResponse.email);
+                      setSelectedResponse(null);
+                    }
+                  }}
+                  className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium text-sm flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                >
+                  <Trash2 className="w-4 h-4" /> Delete
+                </button>
+
+                {selectedResponse.status === 'pending' ? (
+                  <div className="flex justify-end gap-3">
+                    <button 
+                      disabled={loadingAction === selectedResponse.id}
+                      onClick={() => { handleAction(selectedResponse.id, 'reject', selectedResponse.email); setSelectedResponse(null); }}
+                      className="bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-red-600 hover:text-white transition-colors disabled:opacity-50"
+                    >
+                      Reject
+                    </button>
+                    <button 
+                      disabled={loadingAction === selectedResponse.id}
+                      onClick={() => { handleAction(selectedResponse.id, 'accept', selectedResponse.email); setSelectedResponse(null); }}
+                      className="bg-brand-green-primary text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-brand-green-primary/90 transition-colors shadow-md disabled:opacity-50"
+                    >
+                      Accept
+                    </button>
+                  </div>
+                ) : (
+                  <div className="text-text-muted text-sm italic">
+                    Resolved ({selectedResponse.status})
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

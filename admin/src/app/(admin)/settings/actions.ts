@@ -29,3 +29,13 @@ export async function toggleApplicationsStatus(isOpen: boolean) {
     return { error: error.message };
   }
 }
+
+export async function setApplicationsSetting(setting: any) {
+  try {
+    await setSetting('applications_open', setting);
+    revalidatePath('/settings');
+    return { success: true };
+  } catch (error: any) {
+    return { error: error.message };
+  }
+}

@@ -11,6 +11,7 @@ import { FAQ } from "@/components/FAQ";
 import { Footer } from "@/components/Footer";
 import { Founders } from "@/components/Founders";
 import { supabase } from "@/lib/supabase";
+import { isApplicationsOpen } from "@/lib/applications";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -21,8 +22,8 @@ export default async function Home() {
   if (supabase) {
     try {
       const { data, error } = await supabase.from('settings').select('value').eq('key', 'applications_open').single();
-      if (!error && data && data.value !== undefined && data.value !== null) {
-        applicationsOpen = data.value === true || data.value === 'true' || data.value === 1 || data.value === '1';
+      if (!error && data && data.value !== undefined) {
+        applicationsOpen = isApplicationsOpen(data.value);
       }
     } catch (e) {
       console.error("Error fetching applications_open setting:", e);

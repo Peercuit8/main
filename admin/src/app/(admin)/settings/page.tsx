@@ -2,7 +2,7 @@ import { SyncSheetsButton } from './SyncSheetsButton'
 import { FileSpreadsheet, Mail, Power } from 'lucide-react'
 import { getSetting } from '@/lib/settings'
 import { EmailTemplateForm } from './EmailTemplateForm'
-import { ApplicationToggle } from './ApplicationToggle'
+import { ApplicationSettings } from './ApplicationSettings'
 
 export const dynamic = 'force-dynamic'
 
@@ -65,7 +65,7 @@ export default async function SettingsPage() {
     body: defaultRejectionBody.trim()
   });
 
-  const applicationsOpen = await getSetting<boolean>('applications_open', true);
+  const applicationsOpen = await getSetting<any>('applications_open', true);
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -83,9 +83,9 @@ export default async function SettingsPage() {
           <div className="flex-1">
             <h3 className="text-xl font-bold text-text-primary mb-2">Applications Status</h3>
             <p className="text-text-secondary mb-6 leading-relaxed">
-              Turn applications on or off. When off, the public website will not allow new submissions.
+              Configure when the public website should accept new submissions.
             </p>
-            <ApplicationToggle initialStatus={applicationsOpen} />
+            <ApplicationSettings initialSetting={applicationsOpen} />
           </div>
         </div>
       </div>

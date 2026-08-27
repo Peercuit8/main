@@ -18,6 +18,18 @@ export async function POST(req: Request) {
 
     const { id, action, email } = await req.json();
 
+    if (action === 'delete') {
+      const { error: dbError } = await supabaseAdmin
+        .from('applications')
+        .delete()
+        .eq('id', id);
+
+      if (dbError) throw dbError;
+      
+      await logAdminAction(user.email!, `Deleted Application`, { target_email: email, id });
+      return NextResponse.json({ success: true });
+    }
+
     // 2. Update Supabase
     let inviteUrl = '';
     const updatePayload: Record<string, any> = {
