@@ -10,6 +10,26 @@
   --text-5xl: clamp(3rem, 2.25rem + 3.75vw, 4rem);
   --text-6xl: clamp(3.75rem, 2.75rem + 5vw, 5rem);
   --text-7xl: clamp(4.5rem, 3.25rem + 6.25vw, 6rem);
+
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-card: var(--bg-card);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-card: var(--border-card);
+  --color-border-card-hover: var(--border-card-hover);
+  
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  
+  --color-brand-green-deep: var(--brand-green-deep);
+  --color-brand-green-primary: var(--brand-green-primary);
+  --color-brand-green-accent: var(--brand-green-accent);
+  --color-brand-mint-bg: var(--brand-mint-bg);
+  --color-brand-mint-text: var(--brand-mint-text);
+  --color-brand-badge-bg: var(--brand-badge-bg);
+  --color-brand-badge-border: var(--brand-badge-border);
 }
 
 @custom-variant dark (&:where(.dark, .dark *));

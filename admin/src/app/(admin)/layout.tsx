@@ -18,9 +18,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       {/* Sidebar */}
       <aside className="w-64 glass-card border-r border-border-card flex flex-col z-20">
         <div className="p-6 border-b border-border-card flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-brand-green-primary flex items-center justify-center text-white font-bold">
-            P
-          </div>
+          <img src="/logo.png" alt="Peercuit Logo" className="w-8 h-8 rounded-lg object-cover shadow-sm" />
           <h1 className="font-bold text-xl tracking-tight text-text-primary">Admin</h1>
         </div>
         
