@@ -9,6 +9,7 @@ export type ApplicationSettingValue = boolean | {
   startDate?: string;
   endDate?: string;
   capacityLimit?: number;
+  launchName?: string;
 };
 
 export function ApplicationSettings({ initialSetting }: { initialSetting: ApplicationSettingValue }) {
@@ -94,7 +95,25 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
       )}
 
       <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Maximum Accepted Members Cap (Optional)</label>
+        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Launch / Cohort Name (Optional)</label>
+        <p className="text-xs text-gray-500 mb-3">This name will be displayed on the website (e.g., "Cohort 1 - Sept 5").</p>
+        <input
+          type="text"
+          placeholder="e.g. Cohort 1 - Sept 5"
+          value={(typeof setting === 'object' && setting.launchName) ? setting.launchName : ''}
+          onChange={(e) => {
+            const val = e.target.value || undefined;
+            if (typeof setting === 'object') {
+              handleSave({ ...setting, launchName: val });
+            } else {
+              handleSave({ type: setting ? 'open' : 'closed', launchName: val });
+            }
+          }}
+          disabled={isPending}
+          className="w-full max-w-sm px-3 py-2 rounded-md bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-brand-green-primary mb-4"
+        />
+
+        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1 border-t border-gray-200 dark:border-gray-700 pt-4">Maximum Accepted Members Cap (Optional)</label>
         <p className="text-xs text-gray-500 mb-3">If set, applications will automatically close once this many applicants have been accepted.</p>
         <input
           type="number"

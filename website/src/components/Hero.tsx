@@ -14,7 +14,7 @@ import {
   Users,
 } from "lucide-react";
 
-export function Hero({ applicationsOpen = true }: { applicationsOpen?: boolean }) {
+export function Hero({ applicationsOpen = true, launchName = 'Cohort 4' }: { applicationsOpen?: boolean, launchName?: string }) {
   return (
     <section className="relative pt-24 pb-14 sm:pt-32 sm:pb-20 md:pt-36 md:pb-24 overflow-hidden">
       {/* Background glowing ambient lighting */}
@@ -44,7 +44,7 @@ export function Hero({ applicationsOpen = true }: { applicationsOpen?: boolean }
             <span className={`font-bold ${applicationsOpen ? 'text-slate-900 dark:text-white' : 'text-red-900 dark:text-red-200'} truncate`}>Curated Student Network</span>
             <span className={applicationsOpen ? "text-emerald-600 dark:text-emerald-400/50" : "text-red-400"}>•</span>
             <span className={`font-semibold truncate ${applicationsOpen ? 'text-[#0d623d] dark:text-emerald-300' : 'text-red-700 dark:text-red-400'}`}>
-              {applicationsOpen ? 'Applications Open' : 'Applications currently closed'}
+              {applicationsOpen ? `Applications Open for ${launchName}` : 'Applications currently closed'}
             </span>
           </motion.div>
 

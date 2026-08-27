@@ -18,12 +18,16 @@ export const revalidate = 0;
 
 export default async function Home() {
   let applicationsOpen = true;
+  let launchName = 'Cohort 4'; // Default fallback
 
   if (supabase) {
     try {
       const { data, error } = await supabase.from('settings').select('value').eq('key', 'applications_open').single();
       if (!error && data && data.value !== undefined) {
         applicationsOpen = isApplicationsOpen(data.value);
+        if (typeof data.value === 'object' && data.value.launchName) {
+          launchName = data.value.launchName;
+        }
         if (applicationsOpen && typeof data.value === 'object' && data.value.capacityLimit) {
           const { count, error: countError } = await supabase
             .from('applications')
@@ -45,7 +49,7 @@ export default async function Home() {
 
       <main className="flex-grow">
         {/* 1. Hero Section */}
-        <Hero applicationsOpen={applicationsOpen} />
+        <Hero applicationsOpen={applicationsOpen} launchName={launchName} />
 
         {/* 2. What You Get (Value Props) */}
         <ValueProps />
@@ -71,7 +75,7 @@ export default async function Home() {
 
               <div className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full ${applicationsOpen ? 'bg-emerald-100 dark:bg-emerald-500/15 text-emerald-900 dark:text-emerald-300 border-emerald-300 dark:border-emerald-500/30' : 'bg-red-100 dark:bg-red-500/15 text-red-900 dark:text-red-300 border-red-300 dark:border-red-500/30'} text-xs font-semibold uppercase tracking-wider mb-5 border`}>
                 <Cpu className={`w-3.5 h-3.5 ${applicationsOpen ? 'text-[#0d623d] dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`} />
-                {applicationsOpen ? 'Applications Open for Cohort 4' : 'Applications are Closed'}
+                {applicationsOpen ? `Applications Open for ${launchName}` : 'Applications are Closed'}
               </div>
 
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight max-w-2xl mx-auto mb-4">
