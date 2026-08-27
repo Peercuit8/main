@@ -210,9 +210,9 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
 
 
       
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold gradient-text-highlight">Overview</h2>
+      <div className="max-w-7xl mx-auto px-0 sm:px-2 relative z-10">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+          <h2 className="text-2xl sm:text-3xl font-bold gradient-text-highlight">Overview</h2>
           <button 
             onClick={triggerCoffeeChats}
             disabled={matching}
@@ -310,12 +310,12 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
             <span className="text-brand-green-primary font-semibold">
               {selectedIds.length} candidate(s) selected
             </span>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-2">
               <button onClick={() => handleBulkAction('accept')} disabled={loadingAction === 'bulk'} className="bg-brand-mint-bg text-brand-mint-text px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-green-primary hover:text-white transition-colors disabled:opacity-50">
-                Accept Selected
+                Accept
               </button>
               <button onClick={() => handleBulkAction('reject')} disabled={loadingAction === 'bulk'} className="bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 hover:text-white transition-colors disabled:opacity-50">
-                Reject Selected
+                Reject
               </button>
               <button onClick={handleBulkAssignCohort} disabled={loadingAction === 'bulk'} className="bg-bg-surface border border-border-card text-text-primary px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
                 Assign Cohort
