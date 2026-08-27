@@ -29,8 +29,15 @@ export async function POST(req: Request) {
       updatePayload.invite_token = inviteToken;
       updatePayload.invite_token_used = false;
 
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peercuit.com';
-      inviteUrl = `${siteUrl}/join?token=${inviteToken}`;
+      const siteUrl = 
+        process.env.NEXT_PUBLIC_SITE_URL || 
+        process.env.WEBSITE_URL || 
+        (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '') ||
+        (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : '') ||
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '') ||
+        'https://peercuit.com';
+
+      inviteUrl = `${siteUrl.replace(/\/$/, '')}/join?token=${inviteToken}`;
     }
 
     const { error: dbError } = await supabaseAdmin
