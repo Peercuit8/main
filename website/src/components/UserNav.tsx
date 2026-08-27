@@ -45,7 +45,7 @@ export function UserNav() {
         disabled={isSigningIn}
         aria-label="Sign in with Google"
         title="Sign in with Google"
-        className="w-9 h-9 rounded-full bg-white dark:bg-[#0c1610] hover:bg-slate-100 dark:hover:bg-[#122218] border border-slate-200 dark:border-emerald-500/25 flex items-center justify-center shadow-xs hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50"
+        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white dark:bg-[#0c1610] hover:bg-slate-100 dark:hover:bg-[#122218] border border-slate-200 dark:border-emerald-500/25 flex items-center justify-center shadow-xs hover:scale-105 active:scale-95 transition-all cursor-pointer disabled:opacity-50 shrink-0"
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24">
           <path
@@ -78,7 +78,7 @@ export function UserNav() {
         onClick={() => setMenuOpen(!menuOpen)}
         aria-label="User menu"
         title={user.displayName || user.email || "Account"}
-        className="w-9 h-9 rounded-full p-0.5 border-2 border-[#0d623d] dark:border-emerald-500/50 hover:border-emerald-400 dark:hover:border-emerald-400 transition-all shadow-xs hover:scale-105 active:scale-95 flex items-center justify-center overflow-hidden cursor-pointer"
+        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full p-0.5 border-2 border-[#0d623d] dark:border-emerald-500/50 hover:border-emerald-400 dark:hover:border-emerald-400 transition-all shadow-xs hover:scale-105 active:scale-95 flex items-center justify-center overflow-hidden cursor-pointer shrink-0"
       >
         {user.photoURL ? (
           <Image

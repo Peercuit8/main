@@ -75,7 +75,7 @@ export function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo & Name in App Bar */}
         <Link href="/" className="flex items-center group">
-          <PeercuitLogo size="sm" showWordmark={true} />
+          <PeercuitLogo size="sm" showWordmark={true} hideWordmarkOnMobile={true} />
         </Link>
 
         {/* Desktop Nav with Animated Active Underline */}
@@ -135,21 +135,21 @@ export function Navbar() {
         </div>
 
         {/* Mobile Header Buttons */}
-        <div className="flex md:hidden items-center gap-2">
+        <div className="flex md:hidden items-center gap-1 sm:gap-2">
           <ThemeToggle />
           <UserNav />
           <Link
             href="/apply"
-            className="px-4 py-2 text-sm font-semibold text-white bg-[#0d623d] dark:bg-emerald-600 rounded-lg min-h-[44px] flex items-center justify-center"
+            className="px-3 py-1.5 text-xs sm:text-sm font-semibold text-white bg-[#0d623d] dark:bg-emerald-600 rounded-lg min-h-[36px] sm:min-h-[44px] flex items-center justify-center ml-1"
           >
             Apply
           </Link>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 focus:outline-none cursor-pointer"
+            className="p-1.5 sm:p-2 min-h-[36px] min-w-[36px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 focus:outline-none cursor-pointer"
             aria-label="Toggle menu"
           >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
           </button>
         </div>
       </div>

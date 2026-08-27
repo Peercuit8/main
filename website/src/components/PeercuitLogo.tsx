@@ -15,7 +15,8 @@ export function PeercuitLogo({
   showWordmark = true,
   className = "",
   useImage = true,
-}: PeercuitLogoProps) {
+  hideWordmarkOnMobile = false,
+}: PeercuitLogoProps & { hideWordmarkOnMobile?: boolean }) {
   const sizeMap = {
     sm: { icon: 34, text: "text-xl", gap: "gap-2.5" },
     md: { icon: 42, text: "text-2xl", gap: "gap-3" },
@@ -43,7 +44,7 @@ export function PeercuitLogo({
       </div>
 
       {showWordmark && (
-        <span className={`font-black tracking-tight ${textSize} text-slate-900 dark:text-white flex items-center leading-none transition-colors`}>
+        <span className={`font-black tracking-tight ${textSize} text-slate-900 dark:text-white ${hideWordmarkOnMobile ? 'hidden sm:flex' : 'flex'} items-center leading-none transition-colors`}>
           Peer<span className="text-[#0d623d] dark:text-emerald-400">cuit</span>
         </span>
       )}

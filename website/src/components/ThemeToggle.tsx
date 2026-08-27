@@ -22,7 +22,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     <button
       onClick={toggleTheme}
       aria-label="Toggle theme"
-      className={`relative p-2 rounded-lg transition-all duration-200 cursor-pointer border ${
+      className={`relative p-1.5 sm:p-2 rounded-lg transition-all duration-200 cursor-pointer border flex items-center justify-center ${
         theme === "dark"
           ? "bg-[#0c1610] text-emerald-400 border-emerald-500/20 hover:border-emerald-500/40 hover:bg-[#112017]"
           : "bg-emerald-50 text-emerald-800 border-emerald-200 hover:border-emerald-300 hover:bg-emerald-100/80 shadow-xs"
