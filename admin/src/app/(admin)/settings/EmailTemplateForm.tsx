@@ -20,12 +20,12 @@ function SubmitButton() {
   );
 }
 
-export function EmailTemplateForm({ initialSubject, initialBody }: { initialSubject: string, initialBody: string }) {
+export function EmailTemplateForm({ settingKey, initialSubject, initialBody }: { settingKey: string, initialSubject: string, initialBody: string }) {
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   const action = async (formData: FormData) => {
     setMessage(null);
-    const result = await saveEmailTemplate(formData);
+    const result = await saveEmailTemplate(settingKey, formData);
     if (result.error) {
       setMessage({ type: 'error', text: result.error });
     } else {

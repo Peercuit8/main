@@ -16,12 +16,41 @@ const defaultEmailBody = `
 </div>
 `;
 
+const defaultAcceptanceBody = `
+<div style="font-family: sans-serif; padding: 20px; color: #333; background-color: #edf8f0; border-radius: 8px;">
+  <h2 style="color: #0d623d;">Welcome to Peercuit!</h2>
+  <p>Congratulations, your application has been accepted.</p>
+  <p>We are thrilled to have you join our community. Stay tuned for upcoming events and your first coffee chat matches!</p>
+  <p style="font-size: 12px; color: #666; margin-top: 30px;">- The Peercuit Team</p>
+</div>
+`;
+
+const defaultRejectionBody = `
+<div style="font-family: sans-serif; padding: 20px; color: #333; background-color: #fcf4f4; border-radius: 8px;">
+  <h2 style="color: #c53030;">Update on your Peercuit Application</h2>
+  <p>Thank you for applying to Peercuit.</p>
+  <p>Unfortunately, we are unable to offer you a spot in our community at this time.</p>
+  <p>We encourage you to apply again in the future.</p>
+  <p style="font-size: 12px; color: #666; margin-top: 30px;">- The Peercuit Team</p>
+</div>
+`;
+
 export default async function SettingsPage() {
   const isGoogleConfigured = !!(process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY && process.env.GOOGLE_SHEET_ID)
 
   const emailTemplate = await getSetting<{ subject: string, body: string }>('coffee_chat_email_template', {
     subject: 'Your Peercuit Coffee Chat Match!',
     body: defaultEmailBody.trim()
+  });
+
+  const acceptanceTemplate = await getSetting<{ subject: string, body: string }>('acceptance_email_template', {
+    subject: 'You have been accepted to Peercuit!',
+    body: defaultAcceptanceBody.trim()
+  });
+
+  const rejectionTemplate = await getSetting<{ subject: string, body: string }>('rejection_email_template', {
+    subject: 'Update on your Peercuit application',
+    body: defaultRejectionBody.trim()
   });
 
   const applicationsOpen = await getSetting<boolean>('applications_open', true);
@@ -90,7 +119,37 @@ export default async function SettingsPage() {
             <p className="text-text-secondary mb-6 leading-relaxed">
               Customize the email sent to users when they are matched for a coffee chat.
             </p>
-            <EmailTemplateForm initialSubject={emailTemplate.subject} initialBody={emailTemplate.body} />
+            <EmailTemplateForm settingKey="coffee_chat_email_template" initialSubject={emailTemplate.subject} initialBody={emailTemplate.body} />
+          </div>
+        </div>
+      </div>
+
+      <div className="glass-card rounded-2xl overflow-hidden shadow-sm p-8 mt-8">
+        <div className="flex items-start gap-6">
+          <div className="bg-green-100 p-4 rounded-xl">
+            <Mail className="w-8 h-8 text-green-700" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-xl font-bold text-text-primary mb-2">Acceptance Email Template</h3>
+            <p className="text-text-secondary mb-6 leading-relaxed">
+              Customize the email sent when you accept a user's application.
+            </p>
+            <EmailTemplateForm settingKey="acceptance_email_template" initialSubject={acceptanceTemplate.subject} initialBody={acceptanceTemplate.body} />
+          </div>
+        </div>
+      </div>
+
+      <div className="glass-card rounded-2xl overflow-hidden shadow-sm p-8 mt-8 mb-12">
+        <div className="flex items-start gap-6">
+          <div className="bg-red-100 p-4 rounded-xl">
+            <Mail className="w-8 h-8 text-red-700" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-xl font-bold text-text-primary mb-2">Rejection Email Template</h3>
+            <p className="text-text-secondary mb-6 leading-relaxed">
+              Customize the email sent when you reject a user's application.
+            </p>
+            <EmailTemplateForm settingKey="rejection_email_template" initialSubject={rejectionTemplate.subject} initialBody={rejectionTemplate.body} />
           </div>
         </div>
       </div>

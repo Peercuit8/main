@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { setSetting } from '@/lib/settings';
 
-export async function saveEmailTemplate(formData: FormData) {
+export async function saveEmailTemplate(settingKey: string, formData: FormData) {
   const subject = formData.get('subject') as string;
   const body = formData.get('body') as string;
 
@@ -12,7 +12,7 @@ export async function saveEmailTemplate(formData: FormData) {
   }
 
   try {
-    await setSetting('coffee_chat_email_template', { subject, body });
+    await setSetting(settingKey, { subject, body });
     revalidatePath('/settings');
     return { success: true };
   } catch (error: any) {

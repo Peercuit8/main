@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resend } from '@/lib/resend';
 import { appendToSheet } from '@/lib/google-sheets';
 import { logAdminAction } from '@/lib/audit';
+import { getSetting } from '@/lib/settings';
 
 export async function POST(req: Request) {
   try {
@@ -27,17 +28,42 @@ export async function POST(req: Request) {
 
     // 3. Send Email
     try {
+      const templateKey = action === 'accept' ? 'acceptance_email_template' : 'rejection_email_template';
+      
+      const defaultAcceptanceBody = `
+      <div style="font-family: sans-serif; padding: 20px; color: #333; background-color: #edf8f0; border-radius: 8px;">
+        <h2 style="color: #0d623d;">Welcome to Peercuit!</h2>
+        <p>Congratulations, your application has been accepted.</p>
+        <p>We are thrilled to have you join our community. Stay tuned for upcoming events and your first coffee chat matches!</p>
+        <p style="font-size: 12px; color: #666; margin-top: 30px;">- The Peercuit Team</p>
+      </div>
+      `;
+
+      const defaultRejectionBody = `
+      <div style="font-family: sans-serif; padding: 20px; color: #333; background-color: #fcf4f4; border-radius: 8px;">
+        <h2 style="color: #c53030;">Update on your Peercuit Application</h2>
+        <p>Thank you for applying to Peercuit.</p>
+        <p>Unfortunately, we are unable to offer you a spot in our community at this time.</p>
+        <p>We encourage you to apply again in the future.</p>
+        <p style="font-size: 12px; color: #666; margin-top: 30px;">- The Peercuit Team</p>
+      </div>
+      `;
+
+      const defaultTemplate = action === 'accept' ? {
+        subject: 'You have been accepted to Peercuit!',
+        body: defaultAcceptanceBody.trim()
+      } : {
+        subject: 'Update on your Peercuit application',
+        body: defaultRejectionBody.trim()
+      };
+
+      const template = await getSetting<{ subject: string, body: string }>(templateKey, defaultTemplate);
+
       await resend.emails.send({
         from: 'Peercuit Admin <admin@peercuit.com>',
         to: email,
-        subject: action === 'accept' ? 'Welcome to Peercuit!' : 'Update on your Peercuit application',
-        html: `
-          <div style="font-family: sans-serif; padding: 20px; color: #333;">
-            <h2 style="color: #0d623d;">Hello!</h2>
-            <p>Your application to Peercuit has been <strong>${action}ed</strong>.</p>
-            ${action === 'accept' ? '<p>We are excited to have you on board! You will be matched for a coffee chat soon.</p>' : '<p>Thank you for your interest, but we cannot move forward at this time.</p>'}
-          </div>
-        `,
+        subject: template.subject,
+        html: template.body,
       });
     } catch (e) {
       console.error('Email failed to send. Check Resend key.', e);
