@@ -84,9 +84,17 @@ export function ConfirmationCard({
         </div>
       </div>
 
-      <p className="text-slate-700 dark:text-slate-200 text-sm sm:text-base leading-relaxed mb-6">
+      <p className="text-slate-700 dark:text-slate-200 text-sm sm:text-base leading-relaxed mb-4">
         Thanks for applying to <strong className="text-[#0d623d] dark:text-emerald-400 font-bold">Peercuit</strong>. We received your details and sent a confirmation receipt to <strong className="text-emerald-700 dark:text-emerald-300 underline">{email}</strong>.
       </p>
+
+      {/* Spam Folder Alert Banner */}
+      <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs sm:text-sm mb-6 shadow-xs">
+        <span className="text-base leading-none mt-0.5">📬</span>
+        <div>
+          <span className="font-bold">Important Notice:</span> Please check your <strong>Spam / Junk folder</strong> and mark our emails as <em>&ldquo;Not Spam&rdquo;</em> so you don&apos;t miss your acceptance decision or community updates!
+        </div>
+      </div>
 
       {/* What to expect timeline */}
       <div className="bg-slate-50 dark:bg-[#08120c]/90 rounded-xl p-5 border border-slate-200 dark:border-emerald-500/[0.15] mb-8 space-y-4">

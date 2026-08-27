@@ -175,6 +175,10 @@ ${data.whyJoin}
         <div><strong>Introduce Yourself & Build:</strong> Share what you're working on, get feedback, and meet peers!</div>
       </div>
 
+      <div style="background-color: #1a2e22; border: 1px solid #059669; border-radius: 8px; padding: 12px 16px; margin: 20px 0; font-size: 13px; color: #a7f3d0;">
+        💡 <strong>Quick Tip:</strong> Check your <strong>Spam / Promotions folder</strong> and mark this email as &ldquo;Not Spam&rdquo; to ensure our decision & WhatsApp invite reach your main inbox!
+      </div>
+
       <p style="margin-top: 24px;">In the meantime, feel free to reply directly to this email if you have any questions.</p>
       <p style="margin-bottom: 0;">Cheering you on,<br/><strong style="color: #34d399;">The Peercuit Team</strong></p>
     </div>
