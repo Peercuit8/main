@@ -12,13 +12,20 @@ import { Footer } from "@/components/Footer";
 import { Founders } from "@/components/Founders";
 import { supabase } from "@/lib/supabase";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function Home() {
   let applicationsOpen = true;
 
   if (supabase) {
-    const { data } = await supabase.from('settings').select('value').eq('key', 'applications_open').single();
-    if (data && data.value !== undefined) {
-      applicationsOpen = data.value;
+    try {
+      const { data, error } = await supabase.from('settings').select('value').eq('key', 'applications_open').single();
+      if (!error && data && data.value !== undefined && data.value !== null) {
+        applicationsOpen = data.value === true || data.value === 'true' || data.value === 1 || data.value === '1';
+      }
+    } catch (e) {
+      console.error("Error fetching applications_open setting:", e);
     }
   }
   return (

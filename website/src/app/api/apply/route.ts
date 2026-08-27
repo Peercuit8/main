@@ -2,9 +2,31 @@ import { NextRequest, NextResponse } from "next/server";
 import { applicationSchema } from "@/lib/schema";
 import { saveApplication, getApplicationCount } from "@/lib/storage";
 import { sendApplicationNotification } from "@/lib/email";
+import { supabase } from "@/lib/supabase";
 
 export async function POST(request: NextRequest) {
   try {
+    // 0. Verify if applications are open
+    if (supabase) {
+      try {
+        const { data, error } = await supabase.from('settings').select('value').eq('key', 'applications_open').single();
+        if (!error && data && data.value !== undefined && data.value !== null) {
+          const isOpen = data.value === true || data.value === 'true' || data.value === 1 || data.value === '1';
+          if (!isOpen) {
+            return NextResponse.json(
+              {
+                success: false,
+                message: "Applications are currently closed. They will open on the first week of every month.",
+              },
+              { status: 403 }
+            );
+          }
+        }
+      } catch (e) {
+        console.error("Error checking applications status in apply API:", e);
+      }
+    }
+
     const body = await request.json();
 
     // 1. Validate payload with Zod

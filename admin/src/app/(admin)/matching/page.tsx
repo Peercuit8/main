@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function MatchingPage() {
   const { data: users, error } = await supabaseAdmin
-    .from('responses')
+    .from('applications')
     .select('*')
     .eq('status', 'accepted')
     .eq('matched', false)

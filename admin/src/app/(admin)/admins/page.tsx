@@ -1,10 +1,13 @@
 import { supabaseAdmin } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase/server'
 import { AddAdminForm } from './AddAdminForm'
 import { DeleteAdminButton } from './DeleteAdminButton'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminsPage() {
+  const supabase = await createClient()
+  const { data: { user: currentUser } } = await supabase.auth.getUser()
   const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers()
 
   if (error) {
@@ -36,10 +39,10 @@ export default async function AdminsPage() {
             <tbody className="divide-y divide-border-card">
               {users?.map(user => (
                 <tr key={user.id} className="hover:bg-bg-surface/50 transition-colors group">
-                  <td className="p-5 font-medium text-text-primary">{user.email}</td>
+                  <td className="p-5 font-medium text-text-primary">{user.email} {currentUser?.email === user.email && <span className="ml-2 text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">You</span>}</td>
                   <td className="p-5 text-text-muted text-sm">{new Date(user.created_at).toLocaleDateString()}</td>
                   <td className="p-5 text-right">
-                    <DeleteAdminButton userId={user.id} userEmail={user.email!} />
+                    <DeleteAdminButton userId={user.id} userEmail={user.email!} isCurrentUser={currentUser?.email === user.email} />
                   </td>
                 </tr>
               ))}

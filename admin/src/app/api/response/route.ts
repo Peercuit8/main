@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
-import { resend } from '@/lib/resend';
+import { sendEmail } from '@/lib/mailer';
 import { appendToSheet } from '@/lib/google-sheets';
 import { logAdminAction } from '@/lib/audit';
 import { getSetting } from '@/lib/settings';
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
 
     // 2. Update Supabase
     const { error: dbError } = await supabaseAdmin
-      .from('responses')
+      .from('applications')
       .update({ status: action === 'accept' ? 'accepted' : 'rejected' })
       .eq('id', id);
 
@@ -59,24 +59,42 @@ export async function POST(req: Request) {
 
       const template = await getSetting<{ subject: string, body: string }>(templateKey, defaultTemplate);
 
-      await resend.emails.send({
-        from: 'Peercuit Admin <admin@peercuit.com>',
+      await sendEmail({
         to: email,
         subject: template.subject,
         html: template.body,
       });
     } catch (e) {
-      console.error('Email failed to send. Check Resend key.', e);
+      console.error('Email failed to send.', e);
     }
 
     // 4. Sync to Google Sheets
     if (process.env.GOOGLE_SHEET_ID) {
       try {
-        await appendToSheet(
-          process.env.GOOGLE_SHEET_ID,
-          'Sheet1!A:D',
-          [[id, email, action, new Date().toISOString()]]
-        );
+        const { data: appData } = await supabaseAdmin.from('applications').select('*').eq('id', id).single();
+        if (appData) {
+          await appendToSheet(
+            process.env.GOOGLE_SHEET_ID,
+            'Sheet1!A:O',
+            [[
+              appData.id,
+              appData.full_name || '',
+              appData.email,
+              appData.school || '',
+              appData.grade || '',
+              appData.location || '',
+              appData.status,
+              appData.matched ? 'Yes' : 'No',
+              appData.current_work || '',
+              appData.why_join || '',
+              appData.referral || '',
+              appData.portfolio_link || '',
+              (appData.interests || []).join(', '),
+              new Date(appData.created_at).toISOString(),
+              appData.ip_address || ''
+            ]]
+          );
+        }
       } catch (e) {
         console.error('Google Sheets append failed.', e);
       }

@@ -11,15 +11,22 @@ export const metadata = {
     "Join a community of high school & college students building side projects, getting honest feedback, and finding co-builders.",
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { supabase } from "@/lib/supabase";
 
 export default async function ApplyPage() {
   let applicationsOpen = true;
 
   if (supabase) {
-    const { data } = await supabase.from('settings').select('value').eq('key', 'applications_open').single();
-    if (data && data.value !== undefined) {
-      applicationsOpen = data.value;
+    try {
+      const { data, error } = await supabase.from('settings').select('value').eq('key', 'applications_open').single();
+      if (!error && data && data.value !== undefined && data.value !== null) {
+        applicationsOpen = data.value === true || data.value === 'true' || data.value === 1 || data.value === '1';
+      }
+    } catch (e) {
+      console.error("Error fetching applications_open setting:", e);
     }
   }
   return (

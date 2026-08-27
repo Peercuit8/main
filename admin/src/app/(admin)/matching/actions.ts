@@ -2,7 +2,7 @@
 
 import { supabaseAdmin } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
-import { resend } from '@/lib/resend';
+import { sendEmail } from '@/lib/mailer';
 import { getSetting } from '@/lib/settings';
 import { logAdminAction } from '@/lib/audit';
 
@@ -37,23 +37,22 @@ export async function sendManualMatches(groupsOfIds: string[][]) {
         
         // Fetch emails for these IDs
         const { data: usersData } = await supabaseAdmin
-          .from('responses')
+          .from('applications')
           .select('email')
           .in('id', groupIds);
 
         if (usersData && usersData.length > 0) {
           groupsCount++;
-          const emails = usersData.map(u => u.email);
+          const emails = usersData.map(u => u.email).join(', ');
           
-          await resend.emails.send({
-            from: 'Peercuit Coffee Chat <coffee@peercuit.com>',
+          await sendEmail({
             to: emails,
             subject: template.subject,
             html: template.body,
           }).catch(e => console.error('Failed to send to group', e));
 
           await supabaseAdmin
-            .from('responses')
+            .from('applications')
             .update({ matched: true })
             .in('id', groupIds);
         }

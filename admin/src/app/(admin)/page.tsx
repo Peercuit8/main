@@ -13,7 +13,7 @@ export default async function Page() {
 
   // Fetch responses
   const { data: responses, error } = await supabase
-    .from('responses')
+    .from('applications')
     .select('*')
     .order('created_at', { ascending: false })
 

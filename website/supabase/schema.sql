@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS public.applications (
   portfolio_link TEXT,
   ip_address TEXT,
   status TEXT NOT NULL DEFAULT 'pending',
+  matched BOOLEAN NOT NULL DEFAULT false,
+  interests TEXT[] DEFAULT '{}',
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   user_id TEXT
 );

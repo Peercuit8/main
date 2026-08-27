@@ -23,21 +23,30 @@ export async function POST() {
 
     // 2. Fetch all responses from DB
     const { data: responses, error: dbError } = await supabaseAdmin
-      .from('responses')
+      .from('applications')
       .select('*')
       .order('created_at', { ascending: false });
 
     if (dbError) throw dbError;
 
     // 3. Prepare data for Google Sheets
-    const headers = ['ID', 'Email', 'Status', 'Matched', 'Interests', 'Created At'];
+    const headers = ['ID', 'Name', 'Email', 'School', 'Grade', 'Location', 'Status', 'Matched', 'Current Work', 'Why Join', 'Referral', 'Portfolio Link', 'Interests', 'Created At', 'IP Address'];
     const rows = (responses || []).map(r => [
       r.id,
+      r.full_name || '',
       r.email,
+      r.school || '',
+      r.grade || '',
+      r.location || '',
       r.status,
       r.matched ? 'Yes' : 'No',
+      r.current_work || '',
+      r.why_join || '',
+      r.referral || '',
+      r.portfolio_link || '',
       r.interests?.join(', ') || '',
-      new Date(r.created_at).toLocaleString()
+      new Date(r.created_at).toLocaleString(),
+      r.ip_address || ''
     ]);
     const sheetData = [headers, ...rows];
 
@@ -51,7 +60,7 @@ export async function POST() {
     const sheets = google.sheets({ version: 'v4', auth });
 
     // 5. Update Sheet
-    // Overwrite the 'Responses' sheet or default sheet starting at A1
+    // Overwrite the 'applications' sheet or default sheet starting at A1
     // For simplicity, we just write to Sheet1 if it exists, or the default first sheet.
     await sheets.spreadsheets.values.update({
       spreadsheetId: sheetId,

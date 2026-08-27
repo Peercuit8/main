@@ -1,11 +1,16 @@
-import { Resend } from "resend";
+import nodemailer from 'nodemailer';
 import { ApplicationInput } from "./schema";
 
-const resendApiKey = process.env.RESEND_API_KEY;
-const resend = resendApiKey ? new Resend(resendApiKey) : null;
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_EMAIL || 'peercuit8@gmail.com',
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
+});
 
-const SENDER_EMAIL = process.env.FROM_EMAIL || "Peercuit Community <onboarding@resend.dev>";
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || process.env.NOTIFICATION_EMAIL || "team@peercuit.com";
+const SENDER_EMAIL = `"Peercuit Community" <${process.env.GMAIL_EMAIL || "peercuit8@gmail.com"}>`;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || process.env.NOTIFICATION_EMAIL || process.env.GMAIL_EMAIL || "peercuit8@gmail.com";
 
 interface EmailResult {
   success: boolean;
@@ -21,8 +26,8 @@ interface EmailResult {
 export async function sendApplicationNotification(
   data: ApplicationInput
 ): Promise<EmailResult> {
-  if (!resend) {
-    console.log("[Email Service] RESEND_API_KEY is not set. Simulating email notification for:", data.email);
+  if (!process.env.GMAIL_APP_PASSWORD) {
+    console.log("[Email Service] GMAIL_APP_PASSWORD is not set. Simulating email notification for:", data.email);
     console.log(`[Email Preview to Admin: ${ADMIN_EMAIL}]
 --------------------------------------------------
 New Application Received:
@@ -126,7 +131,7 @@ ${data.whyJoin}
 </html>
 `;
 
-    const adminResponse = await resend.emails.send({
+    const adminResponse = await transporter.sendMail({
       from: SENDER_EMAIL,
       to: ADMIN_EMAIL,
       subject: `⚡ New Peercuit Application: ${data.fullName} (${data.school})`,
@@ -189,7 +194,7 @@ ${data.whyJoin}
 </html>
 `;
 
-      await resend.emails.send({
+      await transporter.sendMail({
         from: SENDER_EMAIL,
         to: data.email,
         subject: `We've received your Peercuit application! 🚀`,
@@ -199,10 +204,10 @@ ${data.whyJoin}
       console.warn("[Email Service] Failed to send applicant confirmation email (non-critical):", applicantErr);
     }
 
-    return { success: true, messageId: adminResponse.data?.id };
+    return { success: true, messageId: adminResponse.messageId };
   } catch (error: unknown) {
     const err = error as Error;
-    console.error("[Email Service] Resend dispatch error:", err);
+    console.error("[Email Service] Mail dispatch error:", err);
     return { success: false, error: err.message || "Failed to send email notification" };
   }
 }

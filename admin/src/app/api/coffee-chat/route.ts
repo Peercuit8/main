@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
-import { resend } from '@/lib/resend';
+import { sendEmail } from '@/lib/mailer';
 import { getSetting } from '@/lib/settings';
 import { logAdminAction } from '@/lib/audit';
 
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
     // 2. Fetch accepted users who haven't been matched
     const { data: users, error: dbError } = await supabaseAdmin
-      .from('responses')
+      .from('applications')
       .select('*')
       .eq('status', 'accepted')
       .eq('matched', false);
@@ -28,10 +28,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Not enough unmatched users to form a group (minimum 3 required).' });
     }
 
-    // 3. Group them by interests (Simplified: just grouping by chunks of 3-4)
+    // 3. Group them smartly so no one is stranded
     const groups = [];
-    for (let i = 0; i < users.length; i += 4) {
-      groups.push(users.slice(i, i + 4));
+    let i = 0;
+    while (i < users.length) {
+      const remaining = users.length - i;
+      let chunkSize = 4;
+      if (remaining === 5) {
+        chunkSize = 5;
+      } else if (remaining === 6) {
+        chunkSize = 3;
+      } else if (remaining < 4 && remaining >= 3) {
+        chunkSize = 3;
+      } else if (remaining < 3) {
+        if (groups.length > 0) {
+          groups[groups.length - 1].push(...users.slice(i, i + remaining));
+        }
+        break;
+      }
+      groups.push(users.slice(i, i + chunkSize));
+      i += chunkSize;
     }
 
     // 3.5 Fetch email template
@@ -54,11 +70,10 @@ export async function POST(req: Request) {
     for (const group of groups) {
       if (group.length >= 3) {
         groupsMatched++;
-        const emails = group.map((u: any) => u.email);
+        const emails = group.map((u: any) => u.email).join(', ');
         
         try {
-          await resend.emails.send({
-            from: 'Peercuit Coffee Chat <coffee@peercuit.com>',
+          await sendEmail({
             to: emails,
             subject: template.subject,
             html: template.body,
@@ -70,7 +85,7 @@ export async function POST(req: Request) {
         // 5. Mark as matched in DB
         const ids = group.map((u: any) => u.id);
         await supabaseAdmin
-          .from('responses')
+          .from('applications')
           .update({ matched: true })
           .in('id', ids);
       }

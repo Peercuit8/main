@@ -7,7 +7,14 @@ import { createClient } from '@/lib/supabase/client'
 
 export type ResponseRow = {
   id: string
+  full_name?: string
   email: string
+  school?: string
+  grade?: string
+  location?: string
+  current_work?: string
+  why_join?: string
+  portfolio_link?: string
   status: 'pending' | 'accepted' | 'rejected'
   matched: boolean
   interests?: string[]
@@ -70,28 +77,36 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
   const rejectedCount = responses.filter(r => r.status === 'rejected').length
 
   const filteredResponses = responses.filter(r => {
-    const matchesSearch = r.email.toLowerCase().includes(searchTerm.toLowerCase())
+    const searchString = `${r.email} ${r.full_name || ''} ${r.school || ''}`.toLowerCase()
+    const matchesSearch = searchString.includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === 'all' || r.status === statusFilter
     const matchesDuplicate = showDuplicates ? emailCounts[r.email] > 1 : true
     return matchesSearch && matchesStatus && matchesDuplicate
   })
 
   const exportCSV = () => {
-    const headers = ['ID', 'Email', 'Status', 'Matched', 'Interests', 'Created At']
+    const headers = ['ID', 'Name', 'Email', 'School', 'Grade', 'Location', 'Status', 'Matched', 'Current Work', 'Why Join', 'Portfolio Link', 'Interests', 'Created At']
     const rows = filteredResponses.map(r => [
       r.id,
+      r.full_name || '',
       r.email,
+      r.school || '',
+      r.grade || '',
+      r.location || '',
       r.status,
       r.matched ? 'Yes' : 'No',
+      r.current_work || '',
+      r.why_join || '',
+      r.portfolio_link || '',
       (r.interests || []).join('; '),
       new Date(r.created_at).toLocaleString()
     ])
     
-    const csvContent = [headers, ...rows].map(e => e.map(f => `"${f}"`).join(',')).join('\n')
+    const csvContent = [headers, ...rows].map(e => e.map(f => `"${String(f).replace(/"/g, '""')}"`).join(',')).join('\n')
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
     const link = document.createElement('a')
     link.href = URL.createObjectURL(blob)
-    link.setAttribute('download', 'peercuit_responses.csv')
+    link.setAttribute('download', 'peercuit_applications.csv')
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -154,7 +169,7 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
           <div className="flex flex-1 w-full gap-4 items-center flex-wrap">
             <input 
               type="text" 
-              placeholder="Search by email..." 
+              placeholder="Search by name, email, or school..." 
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               className="border border-border-card bg-bg-card text-text-primary p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green-primary w-full max-w-sm"
@@ -193,7 +208,8 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-bg-surface border-b border-border-card text-text-secondary text-sm">
-                  <th className="p-5 font-semibold">Email</th>
+                  <th className="p-5 font-semibold">Applicant</th>
+                  <th className="p-5 font-semibold">School & Grade</th>
                   <th className="p-5 font-semibold">Date</th>
                   <th className="p-5 font-semibold">Status</th>
                   <th className="p-5 font-semibold">Matched</th>
@@ -207,12 +223,19 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
                   <tr key={res.id} className="hover:bg-bg-surface/50 transition-colors group">
                     <td className="p-5 font-medium text-text-primary">
                       <div className="flex flex-col gap-1 items-start">
-                        {res.email}
+                        <span className="font-semibold">{res.full_name || 'N/A'}</span>
+                        <span className="text-xs text-text-muted">{res.email}</span>
                         {isDuplicate && (
                           <span className="text-[10px] font-bold uppercase tracking-wider bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-sm">
                             Duplicate
                           </span>
                         )}
+                      </div>
+                    </td>
+                    <td className="p-5 text-text-secondary text-sm">
+                      <div className="flex flex-col gap-1">
+                        <span>{res.school || '-'}</span>
+                        <span className="text-xs text-text-muted">{res.grade || '-'}</span>
                       </div>
                     </td>
                     <td className="p-5 text-text-muted text-sm">{new Date(res.created_at).toLocaleDateString()}</td>
