@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Users, Mail, CheckCircle, XCircle, Clock, Loader2, RefreshCw, Trash2 } from 'lucide-react'
+import { Users, Mail, CheckCircle, XCircle, Clock, Loader2, RefreshCw, Trash2, Star } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -19,6 +19,9 @@ export type ResponseRow = {
   matched: boolean
   interests?: string[]
   created_at: string
+  rating?: number
+  reviewer_notes?: string
+  cohort?: string
 }
 
 export default function Dashboard({ initialResponses, userEmail }: { initialResponses: ResponseRow[], userEmail: string }) {
@@ -26,11 +29,24 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
   const [loadingAction, setLoadingAction] = useState<string | null>(null)
   const [matching, setMatching] = useState(false)
   const [selectedResponse, setSelectedResponse] = useState<ResponseRow | null>(null)
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [editNotes, setEditNotes] = useState('')
+  const [editRating, setEditRating] = useState(0)
+  const [editCohort, setEditCohort] = useState('')
   const router = useRouter()
   const supabase = createClient()
 
-  const handleAction = async (id: string, action: 'accept' | 'reject' | 'delete', email: string) => {
-    setLoadingAction(id)
+  const openModal = (res: ResponseRow) => {
+    setSelectedResponse(res)
+    setEditNotes(res.reviewer_notes || '')
+    setEditRating(res.rating || 0)
+    setEditCohort(res.cohort || '')
+  }
+
+  const handleAction = async (id: string | string[], action: 'accept' | 'reject' | 'delete', email: string | string[]) => {
+    // Determine loading id: use the first id or a special bulk key
+    const loadingKey = Array.isArray(id) ? 'bulk' : id;
+    setLoadingAction(loadingKey)
     try {
       const res = await fetch('/api/response', {
         method: 'POST',
@@ -41,15 +57,74 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
       
       // Update local state to feel snappy
       if (action === 'delete') {
-        setResponses(prev => prev.filter(r => r.id !== id))
+        const idsToDelete = Array.isArray(id) ? id : [id];
+        setResponses(prev => prev.filter(r => !idsToDelete.includes(r.id)))
+        setSelectedIds([])
       } else {
-        setResponses(prev => prev.map(r => r.id === id ? { ...r, status: action === 'accept' ? 'accepted' : 'rejected' } : r))
+        const idsToUpdate = Array.isArray(id) ? id : [id];
+        setResponses(prev => prev.map(r => idsToUpdate.includes(r.id) ? { ...r, status: action === 'accept' ? 'accepted' : 'rejected' } : r))
+        setSelectedIds([])
       }
     } catch (error) {
       alert('Error performing action. See console.')
       console.error(error)
     } finally {
       setLoadingAction(null)
+    }
+  }
+
+  const handleBulkAction = async (action: 'accept' | 'reject' | 'delete') => {
+    if (selectedIds.length === 0) return;
+    if (action === 'delete' && !confirm(`Are you sure you want to delete ${selectedIds.length} applications?`)) return;
+    
+    const selectedEmails = selectedIds.map(id => responses.find(r => r.id === id)?.email).filter(Boolean) as string[];
+    await handleAction(selectedIds, action, selectedEmails);
+  }
+
+  const handleBulkAssignCohort = async () => {
+    if (selectedIds.length === 0) return;
+    const cohort = prompt('Enter cohort name to assign to selected applications:');
+    if (cohort === null) return;
+    
+    setLoadingAction('bulk');
+    try {
+      // Create an array of promises to update individually since our update route takes 1 id right now.
+      // Wait, we can update them in parallel.
+      await Promise.all(selectedIds.map(id => 
+        fetch('/api/response/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, cohort }),
+        }).then(res => {
+          if (!res.ok) throw new Error('Failed to update')
+        })
+      ));
+      
+      setResponses(prev => prev.map(r => selectedIds.includes(r.id) ? { ...r, cohort } : r));
+      setSelectedIds([]);
+    } catch (e) {
+      alert('Error assigning cohort to some applications.');
+    } finally {
+      setLoadingAction(null);
+    }
+  }
+
+  const saveDetails = async (id: string, updates: { rating?: number, reviewer_notes?: string, cohort?: string }) => {
+    try {
+      const res = await fetch('/api/response/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, ...updates }),
+      })
+      if (!res.ok) throw new Error('Failed to update details')
+      
+      setResponses(prev => prev.map(r => r.id === id ? { ...r, ...updates } : r))
+      if (selectedResponse?.id === id) {
+        setSelectedResponse(prev => prev ? { ...prev, ...updates } : null)
+      }
+    } catch (error) {
+      console.error(error)
+      alert('Failed to save details')
     }
   }
 
@@ -70,12 +145,15 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
 
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'accepted' | 'rejected'>('all')
+  const [cohortFilter, setCohortFilter] = useState<string>('all')
   const [showDuplicates, setShowDuplicates] = useState(false)
 
   const emailCounts = responses.reduce((acc, r) => {
     acc[r.email] = (acc[r.email] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
+
+  const uniqueCohorts = Array.from(new Set(responses.map(r => r.cohort).filter(Boolean))) as string[];
 
   const pendingCount = responses.filter(r => r.status === 'pending').length
   const acceptedCount = responses.filter(r => r.status === 'accepted').length
@@ -85,13 +163,18 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
     const searchString = `${r.email} ${r.full_name || ''} ${r.school || ''}`.toLowerCase()
     const matchesSearch = searchString.includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === 'all' || r.status === statusFilter
+    const matchesCohort = cohortFilter === 'all' || r.cohort === cohortFilter
     const matchesDuplicate = showDuplicates ? emailCounts[r.email] > 1 : true
-    return matchesSearch && matchesStatus && matchesDuplicate
+    return matchesSearch && matchesStatus && matchesCohort && matchesDuplicate
   })
 
   const exportCSV = () => {
-    const headers = ['ID', 'Name', 'Email', 'School', 'Grade', 'Location', 'Status', 'Matched', 'Current Work', 'Why Join', 'Portfolio Link', 'Interests', 'Created At']
-    const rows = filteredResponses.map(r => [
+    const dataToExport = selectedIds.length > 0 
+      ? responses.filter(r => selectedIds.includes(r.id))
+      : filteredResponses;
+
+    const headers = ['ID', 'Name', 'Email', 'School', 'Grade', 'Location', 'Status', 'Matched', 'Current Work', 'Why Join', 'Portfolio Link', 'Interests', 'Cohort', 'Rating', 'Created At']
+    const rows = dataToExport.map(r => [
       r.id,
       r.full_name || '',
       r.email,
@@ -104,6 +187,8 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
       r.why_join || '',
       r.portfolio_link || '',
       (r.interests || []).join('; '),
+      r.cohort || '',
+      r.rating || '',
       new Date(r.created_at).toLocaleString()
     ])
     
@@ -189,6 +274,18 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
               <option value="accepted">Accepted</option>
               <option value="rejected">Rejected</option>
             </select>
+            {uniqueCohorts.length > 0 && (
+              <select 
+                value={cohortFilter} 
+                onChange={e => setCohortFilter(e.target.value)}
+                className="border border-border-card bg-bg-card text-text-primary p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green-primary max-w-xs"
+              >
+                <option value="all">All Cohorts</option>
+                {uniqueCohorts.map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            )}
             <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-text-secondary select-none">
               <input 
                 type="checkbox" 
@@ -207,12 +304,49 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
           </button>
         </div>
 
+        {/* Bulk Actions */}
+        {selectedIds.length > 0 && (
+          <div className="bg-brand-green-primary/10 border border-brand-green-primary/20 p-4 rounded-xl mb-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4">
+            <span className="text-brand-green-primary font-semibold">
+              {selectedIds.length} candidate(s) selected
+            </span>
+            <div className="flex gap-2">
+              <button onClick={() => handleBulkAction('accept')} disabled={loadingAction === 'bulk'} className="bg-brand-mint-bg text-brand-mint-text px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-green-primary hover:text-white transition-colors disabled:opacity-50">
+                Accept Selected
+              </button>
+              <button onClick={() => handleBulkAction('reject')} disabled={loadingAction === 'bulk'} className="bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 hover:text-white transition-colors disabled:opacity-50">
+                Reject Selected
+              </button>
+              <button onClick={handleBulkAssignCohort} disabled={loadingAction === 'bulk'} className="bg-bg-surface border border-border-card text-text-primary px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
+                Assign Cohort
+              </button>
+              <button onClick={() => handleBulkAction('delete')} disabled={loadingAction === 'bulk'} className="bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 hover:text-white transition-colors disabled:opacity-50 flex items-center gap-1">
+                <Trash2 className="w-4 h-4" /> Delete
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Table */}
         <div className="glass-card rounded-2xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-bg-surface border-b border-border-card text-text-secondary text-sm">
+                  <th className="w-12 p-5 text-center">
+                    <input 
+                      type="checkbox"
+                      checked={filteredResponses.length > 0 && selectedIds.length === filteredResponses.length}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedIds(filteredResponses.map(r => r.id));
+                        } else {
+                          setSelectedIds([]);
+                        }
+                      }}
+                      className="w-4 h-4 text-brand-green-primary bg-bg-card border-border-card rounded focus:ring-brand-green-primary"
+                    />
+                  </th>
                   <th className="p-5 font-semibold">Applicant</th>
                   <th className="p-5 font-semibold">School & Grade</th>
                   <th className="p-5 font-semibold">Date</th>
@@ -224,8 +358,23 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
               <tbody className="divide-y divide-border-card">
                 {filteredResponses.map(res => {
                   const isDuplicate = emailCounts[res.email] > 1;
+                  const isSelected = selectedIds.includes(res.id);
                   return (
-                  <tr key={res.id} onClick={() => setSelectedResponse(res)} className="hover:bg-bg-surface/50 transition-colors group cursor-pointer">
+                  <tr key={res.id} onClick={() => openModal(res)} className={`hover:bg-bg-surface/50 transition-colors group cursor-pointer ${isSelected ? 'bg-bg-surface/30' : ''}`}>
+                    <td className="p-5 text-center" onClick={e => e.stopPropagation()}>
+                      <input 
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds(prev => [...prev, res.id]);
+                          } else {
+                            setSelectedIds(prev => prev.filter(id => id !== res.id));
+                          }
+                        }}
+                        className="w-4 h-4 text-brand-green-primary bg-bg-card border-border-card rounded focus:ring-brand-green-primary"
+                      />
+                    </td>
                     <td className="p-5 font-medium text-text-primary">
                       <div className="flex flex-col gap-1 items-start">
                         <span className="font-semibold">{res.full_name || 'N/A'}</span>
@@ -391,6 +540,59 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
                   ) : (
                     <span className="text-text-muted">N/A</span>
                   )}
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-border-card mt-6">
+                <h3 className="text-sm font-bold text-text-primary mb-4">Internal Review</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs text-text-muted uppercase font-semibold tracking-wider mb-2">Rating</label>
+                    <div className="flex items-center gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          onClick={() => {
+                            setEditRating(star);
+                            saveDetails(selectedResponse.id, { rating: star });
+                          }}
+                          className={`p-1 transition-colors ${editRating >= star ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-700 hover:text-yellow-200'}`}
+                        >
+                          <Star className="w-6 h-6 fill-current" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-text-muted uppercase font-semibold tracking-wider mb-2">Cohort / Batch</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Fall 2026"
+                      value={editCohort}
+                      onChange={(e) => setEditCohort(e.target.value)}
+                      onBlur={() => {
+                        if (editCohort !== selectedResponse.cohort) {
+                          saveDetails(selectedResponse.id, { cohort: editCohort });
+                        }
+                      }}
+                      className="w-full border border-border-card bg-bg-surface text-text-primary p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green-primary text-sm"
+                    />
+                  </div>
+                </div>
+                
+                <div className="mt-4">
+                  <label className="block text-xs text-text-muted uppercase font-semibold tracking-wider mb-2">Reviewer Notes</label>
+                  <textarea 
+                    value={editNotes}
+                    onChange={(e) => setEditNotes(e.target.value)}
+                    onBlur={() => {
+                      if (editNotes !== selectedResponse.reviewer_notes) {
+                        saveDetails(selectedResponse.id, { reviewer_notes: editNotes });
+                      }
+                    }}
+                    placeholder="Add private notes about this candidate..."
+                    className="w-full border border-border-card bg-bg-surface text-text-primary p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-green-primary text-sm min-h-[100px] resize-y"
+                  />
                 </div>
               </div>
 

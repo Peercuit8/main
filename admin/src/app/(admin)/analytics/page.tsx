@@ -37,7 +37,6 @@ export default async function AnalyticsPage() {
   }))
 
 
-  // 2. Process data for Interests
   const interestCounts: Record<string, number> = {}
   validResponses.forEach(r => {
     if (r.interests && Array.isArray(r.interests)) {
@@ -51,6 +50,34 @@ export default async function AnalyticsPage() {
     .map(interest => ({ interest, count: interestCounts[interest] }))
     .sort((a, b) => b.count - a.count)
 
+  // 3. Process data for Referrals
+  const referralCounts: Record<string, number> = {}
+  validResponses.forEach(r => {
+    if (r.referral) {
+      const ref = r.referral.trim();
+      referralCounts[ref] = (referralCounts[ref] || 0) + 1;
+    }
+  })
+  
+  const referralData = Object.keys(referralCounts)
+    .map(source => ({ source, count: referralCounts[source] }))
+    .sort((a, b) => b.count - a.count);
+
+  // 4. Process Funnel Data
+  const totalApplied = validResponses.length;
+  const accepted = validResponses.filter(r => r.status === 'accepted').length;
+  const rejected = validResponses.filter(r => r.status === 'rejected').length;
+  const pending = validResponses.filter(r => r.status === 'pending').length;
+  const joined = validResponses.filter(r => r.invite_token_used).length;
+
+  const funnelData = [
+    { name: 'Total Applicants', value: totalApplied },
+    { name: 'Pending Review', value: pending },
+    { name: 'Accepted', value: accepted },
+    { name: 'Rejected', value: rejected },
+    { name: 'Joined WhatsApp', value: joined },
+  ]
+
   return (
     <div className="max-w-6xl mx-auto pb-12">
       <div className="mb-8">
@@ -58,7 +85,12 @@ export default async function AnalyticsPage() {
         <p className="text-text-secondary">View how your community is growing and what their interests are.</p>
       </div>
 
-      <AnalyticsCharts dailyData={dailyData} interestData={interestData} />
+      <AnalyticsCharts 
+        dailyData={dailyData} 
+        interestData={interestData} 
+        referralData={referralData}
+        funnelData={funnelData}
+      />
     </div>
   )
 }

@@ -25,6 +25,16 @@ export default async function ApplyPage() {
       const { data, error } = await supabase.from('settings').select('value').eq('key', 'applications_open').single();
       if (!error && data && data.value !== undefined) {
         applicationsOpen = isApplicationsOpen(data.value);
+        if (applicationsOpen && typeof data.value === 'object' && data.value.capacityLimit) {
+          const { count, error: countError } = await supabase
+            .from('applications')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'accepted');
+          
+          if (!countError && count !== null && count >= data.value.capacityLimit) {
+            applicationsOpen = false;
+          }
+        }
       }
     } catch (e) {
       console.error("Error fetching applications_open setting:", e);

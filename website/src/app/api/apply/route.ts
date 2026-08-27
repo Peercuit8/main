@@ -22,6 +22,23 @@ export async function POST(request: NextRequest) {
               { status: 403 }
             );
           }
+
+          if (typeof data.value === 'object' && data.value.capacityLimit) {
+            const { count, error: countError } = await supabase
+              .from('applications')
+              .select('*', { count: 'exact', head: true })
+              .eq('status', 'accepted');
+            
+            if (!countError && count !== null && count >= data.value.capacityLimit) {
+              return NextResponse.json(
+                {
+                  success: false,
+                  message: "Applications are currently closed as we have reached our capacity.",
+                },
+                { status: 403 }
+              );
+            }
+          }
         }
       } catch (e) {
         console.error("Error checking applications status in apply API:", e);

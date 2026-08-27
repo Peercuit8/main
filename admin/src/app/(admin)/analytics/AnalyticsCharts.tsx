@@ -7,10 +7,20 @@ import {
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658'];
 
-export function AnalyticsCharts({ dailyData, interestData }: { dailyData: any[], interestData: any[] }) {
+export function AnalyticsCharts({ dailyData, interestData, referralData, funnelData }: { dailyData: any[], interestData: any[], referralData: any[], funnelData: any[] }) {
   return (
     <div className="flex flex-col gap-8">
       
+      {/* Funnel Metrics */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        {funnelData.map((item, i) => (
+          <div key={item.name} className="glass-card p-4 rounded-xl shadow-sm text-center">
+            <p className="text-xs text-text-muted font-semibold uppercase tracking-wider mb-1">{item.name}</p>
+            <p className="text-2xl font-bold text-text-primary">{item.value}</p>
+          </div>
+        ))}
+      </div>
+
       {/* Growth Chart */}
       <div className="glass-card p-6 rounded-2xl shadow-sm">
         <h3 className="text-xl font-semibold text-text-primary mb-6">Sign-ups Over Time</h3>
@@ -83,8 +93,39 @@ export function AnalyticsCharts({ dailyData, interestData }: { dailyData: any[],
             </ResponsiveContainer>
           </div>
         </div>
-
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="glass-card p-6 rounded-2xl shadow-sm flex flex-col items-center">
+          <h3 className="text-xl font-semibold text-text-primary mb-2 w-full text-left">Referral Sources</h3>
+          <div className="h-[280px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={referralData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={5}
+                  dataKey="count"
+                  nameKey="source"
+                >
+                  {referralData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[(index + 3) % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} 
+                  itemStyle={{ color: '#1f2937' }}
+                />
+                <Legend iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
