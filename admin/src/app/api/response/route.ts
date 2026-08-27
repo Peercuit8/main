@@ -19,9 +19,23 @@ export async function POST(req: Request) {
     const { id, action, email } = await req.json();
 
     // 2. Update Supabase
+    let inviteUrl = '';
+    const updatePayload: Record<string, any> = {
+      status: action === 'accept' ? 'accepted' : 'rejected'
+    };
+
+    if (action === 'accept') {
+      const inviteToken = crypto.randomUUID();
+      updatePayload.invite_token = inviteToken;
+      updatePayload.invite_token_used = false;
+
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://peercuit.com';
+      inviteUrl = `${siteUrl}/join?token=${inviteToken}`;
+    }
+
     const { error: dbError } = await supabaseAdmin
       .from('applications')
-      .update({ status: action === 'accept' ? 'accepted' : 'rejected' })
+      .update(updatePayload)
       .eq('id', id);
 
     if (dbError) throw dbError;
@@ -31,11 +45,23 @@ export async function POST(req: Request) {
       const templateKey = action === 'accept' ? 'acceptance_email_template' : 'rejection_email_template';
       
       const defaultAcceptanceBody = `
-      <div style="font-family: sans-serif; padding: 20px; color: #333; background-color: #edf8f0; border-radius: 8px;">
-        <h2 style="color: #0d623d;">Welcome to Peercuit!</h2>
-        <p>Congratulations, your application has been accepted.</p>
-        <p>We are thrilled to have you join our community. Stay tuned for upcoming events and your first coffee chat matches!</p>
-        <p style="font-size: 12px; color: #666; margin-top: 30px;">- The Peercuit Team</p>
+      <div style="font-family: sans-serif; padding: 24px; color: #1e293b; background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #0d623d; margin-top: 0; font-size: 22px;">Welcome to Peercuit! 🎉</h2>
+        <p style="font-size: 15px; line-height: 1.6;">Congratulations, your application to join the Peercuit community has been accepted!</p>
+        <p style="font-size: 15px; line-height: 1.6;">Click the button below to join the private WhatsApp community. Please note that this is your <strong>single-use, personalized invite link</strong>:</p>
+        
+        <div style="margin: 28px 0; text-align: center;">
+          <a href="{invite_link}" style="background-color: #0d623d; color: #ffffff; padding: 14px 28px; font-weight: 700; border-radius: 10px; text-decoration: none; display: inline-block; font-size: 15px; box-shadow: 0 4px 12px rgba(13, 98, 61, 0.2);">
+            👉 Join WhatsApp Community
+          </a>
+        </div>
+
+        <p style="font-size: 12px; color: #64748b; line-height: 1.5; text-align: center;">
+          🔒 <em>This invite link will expire once you click it. Please do not share or forward this link.</em>
+        </p>
+
+        <hr style="border: none; border-top: 1px solid #dcfce7; margin: 24px 0;" />
+        <p style="font-size: 13px; color: #475569; margin-bottom: 0;">Cheering you on,<br/><strong style="color: #0d623d;">The Peercuit Team</strong></p>
       </div>
       `;
 
@@ -50,7 +76,7 @@ export async function POST(req: Request) {
       `;
 
       const defaultTemplate = action === 'accept' ? {
-        subject: 'You have been accepted to Peercuit!',
+        subject: 'You have been accepted to Peercuit! 🎉',
         body: defaultAcceptanceBody.trim()
       } : {
         subject: 'Update on your Peercuit application',
@@ -59,10 +85,26 @@ export async function POST(req: Request) {
 
       const template = await getSetting<{ subject: string, body: string }>(templateKey, defaultTemplate);
 
+      let finalHtml = template.body;
+      if (action === 'accept' && inviteUrl) {
+        if (finalHtml.includes('{invite_link}')) {
+          finalHtml = finalHtml.replace(/\{invite_link\}/g, inviteUrl);
+        } else {
+          // If the custom template didn't have the placeholder, automatically append the button
+          finalHtml += `
+            <div style="margin: 24px 0; text-align: center;">
+              <a href="${inviteUrl}" style="background-color: #0d623d; color: #ffffff; padding: 12px 24px; font-weight: bold; border-radius: 8px; text-decoration: none; display: inline-block;">
+                👉 Join WhatsApp Community (One-Time Link)
+              </a>
+            </div>
+          `;
+        }
+      }
+
       await sendEmail({
         to: email,
         subject: template.subject,
-        html: template.body,
+        html: finalHtml,
       });
     } catch (e) {
       console.error('Email failed to send.', e);

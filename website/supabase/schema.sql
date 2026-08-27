@@ -17,6 +17,9 @@ CREATE TABLE IF NOT EXISTS public.applications (
   status TEXT NOT NULL DEFAULT 'pending',
   matched BOOLEAN NOT NULL DEFAULT false,
   interests TEXT[] DEFAULT '{}',
+  invite_token TEXT UNIQUE,
+  invite_token_used BOOLEAN NOT NULL DEFAULT false,
+  invite_token_used_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   user_id TEXT
 );

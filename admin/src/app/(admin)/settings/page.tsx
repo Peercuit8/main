@@ -17,11 +17,23 @@ const defaultEmailBody = `
 `;
 
 const defaultAcceptanceBody = `
-<div style="font-family: sans-serif; padding: 20px; color: #333; background-color: #edf8f0; border-radius: 8px;">
-  <h2 style="color: #0d623d;">Welcome to Peercuit!</h2>
-  <p>Congratulations, your application has been accepted.</p>
-  <p>We are thrilled to have you join our community. Stay tuned for upcoming events and your first coffee chat matches!</p>
-  <p style="font-size: 12px; color: #666; margin-top: 30px;">- The Peercuit Team</p>
+<div style="font-family: sans-serif; padding: 24px; color: #1e293b; background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; max-width: 600px; margin: 0 auto;">
+  <h2 style="color: #0d623d; margin-top: 0; font-size: 22px;">Welcome to Peercuit! 🎉</h2>
+  <p style="font-size: 15px; line-height: 1.6;">Congratulations, your application to join the Peercuit community has been accepted!</p>
+  <p style="font-size: 15px; line-height: 1.6;">Click the button below to join the private WhatsApp community. Please note that this is your <strong>single-use, personalized invite link</strong>:</p>
+  
+  <div style="margin: 28px 0; text-align: center;">
+    <a href="{invite_link}" style="background-color: #0d623d; color: #ffffff; padding: 14px 28px; font-weight: 700; border-radius: 10px; text-decoration: none; display: inline-block; font-size: 15px;">
+      👉 Join WhatsApp Community
+    </a>
+  </div>
+
+  <p style="font-size: 12px; color: #64748b; line-height: 1.5; text-align: center;">
+    🔒 <em>This invite link will expire once you click it. Please do not share or forward this link.</em>
+  </p>
+
+  <hr style="border: none; border-top: 1px solid #dcfce7; margin: 24px 0;" />
+  <p style="font-size: 13px; color: #475569; margin-bottom: 0;">Cheering you on,<br/><strong style="color: #0d623d;">The Peercuit Team</strong></p>
 </div>
 `;
 
