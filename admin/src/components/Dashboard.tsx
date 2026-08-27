@@ -58,6 +58,12 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
 
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'accepted' | 'rejected'>('all')
+  const [showDuplicates, setShowDuplicates] = useState(false)
+
+  const emailCounts = responses.reduce((acc, r) => {
+    acc[r.email] = (acc[r.email] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 
   const pendingCount = responses.filter(r => r.status === 'pending').length
   const acceptedCount = responses.filter(r => r.status === 'accepted').length
@@ -66,7 +72,8 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
   const filteredResponses = responses.filter(r => {
     const matchesSearch = r.email.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === 'all' || r.status === statusFilter
-    return matchesSearch && matchesStatus
+    const matchesDuplicate = showDuplicates ? emailCounts[r.email] > 1 : true
+    return matchesSearch && matchesStatus && matchesDuplicate
   })
 
   const exportCSV = () => {
@@ -144,7 +151,7 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
 
         {/* Controls */}
         <div className="flex flex-col md:flex-row gap-4 mb-4 items-center justify-between">
-          <div className="flex flex-1 w-full gap-4">
+          <div className="flex flex-1 w-full gap-4 items-center flex-wrap">
             <input 
               type="text" 
               placeholder="Search by email..." 
@@ -162,10 +169,19 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
               <option value="accepted">Accepted</option>
               <option value="rejected">Rejected</option>
             </select>
+            <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-text-secondary select-none">
+              <input 
+                type="checkbox" 
+                checked={showDuplicates}
+                onChange={(e) => setShowDuplicates(e.target.checked)}
+                className="w-4 h-4 text-brand-green-primary bg-bg-card border-border-card rounded focus:ring-brand-green-primary"
+              />
+              Show Only Duplicates
+            </label>
           </div>
           <button 
             onClick={exportCSV}
-            className="bg-bg-surface border border-border-card text-text-secondary hover:text-text-primary hover:bg-bg-card px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            className="bg-bg-surface border border-border-card text-text-secondary hover:text-text-primary hover:bg-bg-card px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
           >
             Export CSV
           </button>
@@ -185,9 +201,20 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-card">
-                {filteredResponses.map(res => (
+                {filteredResponses.map(res => {
+                  const isDuplicate = emailCounts[res.email] > 1;
+                  return (
                   <tr key={res.id} className="hover:bg-bg-surface/50 transition-colors group">
-                    <td className="p-5 font-medium text-text-primary">{res.email}</td>
+                    <td className="p-5 font-medium text-text-primary">
+                      <div className="flex flex-col gap-1 items-start">
+                        {res.email}
+                        {isDuplicate && (
+                          <span className="text-[10px] font-bold uppercase tracking-wider bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-sm">
+                            Duplicate
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="p-5 text-text-muted text-sm">{new Date(res.created_at).toLocaleDateString()}</td>
                     <td className="p-5">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold
@@ -234,7 +261,8 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
                       )}
                     </td>
                   </tr>
-                ))}
+                  )
+                })}
                 {filteredResponses.length === 0 && (
                   <tr>
                     <td colSpan={5} className="p-8 text-center text-text-muted">
