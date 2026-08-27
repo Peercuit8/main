@@ -131,17 +131,9 @@ ${data.whyJoin}
 </html>
 `;
 
-    const adminResponse = await transporter.sendMail({
-      from: SENDER_EMAIL,
-      to: ADMIN_EMAIL,
-      subject: `⚡ New Peercuit Application: ${data.fullName} (${data.school})`,
-      html: adminEmailHtml,
-      replyTo: data.email,
-    });
-
-    // 2. Send Applicant Confirmation Email
-    try {
-      const applicantEmailHtml = `
+    // Construct Applicant Email HTML
+    const applicantFirstName = data.fullName.trim().split(" ")[0] || "there";
+    const applicantEmailHtml = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -161,11 +153,11 @@ ${data.whyJoin}
 <body>
   <div class="card">
     <div class="header">
-      <h1>We got your application, ${escapeHtml(data.fullName.split(" ")[0])}! 🎉</h1>
+      <h1>We got your application, ${escapeHtml(applicantFirstName)}! 🎉</h1>
       <p>Thanks for applying to Peercuit.</p>
     </div>
     <div class="content">
-      <p>Hey ${escapeHtml(data.fullName.split(" ")[0])},</p>
+      <p>Hey ${escapeHtml(applicantFirstName)},</p>
       <p>We're thrilled you want to join our circle of student builders, creators, and thinkers. We review every application personally to keep the community vibrant and supportive.</p>
       
       <h3 style="color: #34d399; font-size: 16px; margin: 20px 0 10px 0;">What happens next:</h3>
@@ -183,7 +175,7 @@ ${data.whyJoin}
         <div><strong>Introduce Yourself & Build:</strong> Share what you're working on, get feedback, and meet peers!</div>
       </div>
 
-      <p style="margin-top: 24px;">In the meantime, feel free to reply to this email if you have any questions.</p>
+      <p style="margin-top: 24px;">In the meantime, feel free to reply directly to this email if you have any questions.</p>
       <p style="margin-bottom: 0;">Cheering you on,<br/><strong style="color: #34d399;">The Peercuit Team</strong></p>
     </div>
     <div class="footer">
@@ -194,20 +186,47 @@ ${data.whyJoin}
 </html>
 `;
 
-      await transporter.sendMail({
+    // Send both emails concurrently
+    const [adminResult, applicantResult] = await Promise.allSettled([
+      // 1. Admin notification email
+      transporter.sendMail({
+        from: SENDER_EMAIL,
+        to: ADMIN_EMAIL,
+        subject: `⚡ New Peercuit Application: ${data.fullName} (${data.school})`,
+        html: adminEmailHtml,
+        replyTo: data.email,
+      }),
+
+      // 2. Applicant confirmation email
+      transporter.sendMail({
         from: SENDER_EMAIL,
         to: data.email,
         subject: `We've received your Peercuit application! 🚀`,
         html: applicantEmailHtml,
-      });
-    } catch (applicantErr) {
-      console.warn("[Email Service] Failed to send applicant confirmation email (non-critical):", applicantErr);
+        replyTo: ADMIN_EMAIL,
+      }),
+    ]);
+
+    if (adminResult.status === 'rejected') {
+      console.error("[Email Service] Failed to send admin notification email:", adminResult.reason);
+    } else {
+      console.log("[Email Service] Admin notification email sent successfully:", adminResult.value.messageId);
     }
 
-    return { success: true, messageId: adminResponse.messageId };
+    if (applicantResult.status === 'rejected') {
+      console.error("[Email Service] Failed to send applicant confirmation email:", applicantResult.reason);
+    } else {
+      console.log("[Email Service] Applicant confirmation email sent successfully:", applicantResult.value.messageId);
+    }
+
+    const successful = adminResult.status === 'fulfilled' || applicantResult.status === 'fulfilled';
+    return {
+      success: successful,
+      messageId: adminResult.status === 'fulfilled' ? adminResult.value.messageId : undefined,
+    };
   } catch (error: unknown) {
     const err = error as Error;
-    console.error("[Email Service] Mail dispatch error:", err);
+    console.error("[Email Service] General mail dispatch error:", err);
     return { success: false, error: err.message || "Failed to send email notification" };
   }
 }
