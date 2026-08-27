@@ -4,6 +4,7 @@ import { LayoutDashboard, Users, Settings, BarChart3, Network, ClipboardList } f
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import SignOutButton from '@/components/SignOutButton'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const supabase = await createClient()
@@ -54,8 +55,12 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             <span className="text-xs font-medium text-text-muted truncate px-2">
               {user.email}
             </span>
-            {/* Sign Out */}
-            <SignOutButton />
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <div className="flex-1">
+                <SignOutButton />
+              </div>
+            </div>
           </div>
         </div>
       </aside>
