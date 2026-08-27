@@ -10,8 +10,17 @@ import { SocialProof } from "@/components/SocialProof";
 import { FAQ } from "@/components/FAQ";
 import { Footer } from "@/components/Footer";
 import { Founders } from "@/components/Founders";
+import { supabase } from "@/lib/supabase";
 
-export default function Home() {
+export default async function Home() {
+  let applicationsOpen = true;
+
+  if (supabase) {
+    const { data } = await supabase.from('settings').select('value').eq('key', 'applications_open').single();
+    if (data && data.value !== undefined) {
+      applicationsOpen = data.value;
+    }
+  }
   return (
     <div className="min-h-screen bg-transparent text-slate-900 dark:text-slate-100 flex flex-col selection:bg-[#0d623d] selection:text-white dark:selection:bg-emerald-500 transition-colors duration-200">
       <Navbar />
@@ -42,9 +51,9 @@ export default function Home() {
               <div className="absolute top-0 right-0 w-72 h-72 radial-glow-emerald opacity-50 pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-72 h-72 radial-glow-green opacity-40 pointer-events-none" />
 
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-500/15 text-emerald-900 dark:text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-5 border border-emerald-300 dark:border-emerald-500/30">
-                <Cpu className="w-3.5 h-3.5 text-[#0d623d] dark:text-emerald-400" />
-                Applications Open for Cohort 4
+              <div className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full ${applicationsOpen ? 'bg-emerald-100 dark:bg-emerald-500/15 text-emerald-900 dark:text-emerald-300 border-emerald-300 dark:border-emerald-500/30' : 'bg-red-100 dark:bg-red-500/15 text-red-900 dark:text-red-300 border-red-300 dark:border-red-500/30'} text-xs font-semibold uppercase tracking-wider mb-5 border`}>
+                <Cpu className={`w-3.5 h-3.5 ${applicationsOpen ? 'text-[#0d623d] dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`} />
+                {applicationsOpen ? 'Applications Open for Cohort 4' : 'Applications are Closed'}
               </div>
 
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight max-w-2xl mx-auto mb-4">
@@ -56,13 +65,23 @@ export default function Home() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link
-                  href="/apply"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-bold text-white bg-[#0d623d] hover:bg-[#094d2f] dark:bg-gradient-to-r dark:from-emerald-600 dark:via-emerald-500 dark:to-teal-600 dark:hover:from-emerald-500 dark:hover:to-teal-500 rounded-xl shadow-xl shadow-emerald-900/15 dark:shadow-emerald-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  Apply to Join Peercuit
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
+                {applicationsOpen ? (
+                  <Link
+                    href="/apply"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-bold text-white bg-[#0d623d] hover:bg-[#094d2f] dark:bg-gradient-to-r dark:from-emerald-600 dark:via-emerald-500 dark:to-teal-600 dark:hover:from-emerald-500 dark:hover:to-teal-500 rounded-xl shadow-xl shadow-emerald-900/15 dark:shadow-emerald-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    Apply to Join Peercuit
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
+                ) : (
+                  <div
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-bold text-white rounded-xl shadow-xl transition-all bg-gray-400 cursor-not-allowed"
+                    aria-disabled="true"
+                  >
+                    Applications Closed
+                    <ArrowRight className="w-5 h-5" />
+                  </div>
+                )}
                 <Link
                   href="#faq"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white glass-card border border-emerald-300/60 dark:border-emerald-500/25 rounded-xl transition-all shadow-xs"

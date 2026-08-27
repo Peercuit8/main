@@ -11,7 +11,17 @@ export const metadata = {
     "Join a community of high school & college students building side projects, getting honest feedback, and finding co-builders.",
 };
 
-export default function ApplyPage() {
+import { supabase } from "@/lib/supabase";
+
+export default async function ApplyPage() {
+  let applicationsOpen = true;
+
+  if (supabase) {
+    const { data } = await supabase.from('settings').select('value').eq('key', 'applications_open').single();
+    if (data && data.value !== undefined) {
+      applicationsOpen = data.value;
+    }
+  }
   return (
     <div className="min-h-screen bg-transparent text-slate-900 dark:text-slate-100 flex flex-col selection:bg-[#0d623d] selection:text-white dark:selection:bg-emerald-500 transition-colors duration-200">
       <Navbar />
@@ -35,7 +45,16 @@ export default function ApplyPage() {
           </div>
 
           {/* Form Container */}
-          <ApplicationForm />
+          {applicationsOpen ? (
+            <ApplicationForm />
+          ) : (
+            <div className="p-12 text-center glass-card border border-emerald-300/80 dark:border-emerald-500/[0.15] rounded-3xl shadow-xl">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Applications are Closed</h2>
+              <p className="text-slate-600 dark:text-slate-400">
+                We are currently not accepting new applications. Please check back later or join our waitlist if available.
+              </p>
+            </div>
+          )}
 
           {/* Trust Highlights Below Form */}
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center sm:text-left">

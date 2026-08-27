@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
 import { resend } from '@/lib/resend';
 import { appendToSheet } from '@/lib/google-sheets';
+import { logAdminAction } from '@/lib/audit';
 
 export async function POST(req: Request) {
   try {
@@ -54,6 +55,9 @@ export async function POST(req: Request) {
         console.error('Google Sheets append failed.', e);
       }
     }
+
+    // 5. Audit Log
+    await logAdminAction(user.email!, `${action === 'accept' ? 'Accepted' : 'Rejected'} User`, { target_email: email, id });
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

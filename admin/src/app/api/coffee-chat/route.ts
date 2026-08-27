@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
 import { resend } from '@/lib/resend';
+import { getSetting } from '@/lib/settings';
+import { logAdminAction } from '@/lib/audit';
 
 export async function POST(req: Request) {
   try {
@@ -32,6 +34,21 @@ export async function POST(req: Request) {
       groups.push(users.slice(i, i + 4));
     }
 
+    // 3.5 Fetch email template
+    const defaultEmailBody = `
+      <div style="font-family: sans-serif; padding: 20px; color: #333; background-color: #edf8f0; border-radius: 8px;">
+        <h2 style="color: #0d623d;">Hello everyone!</h2>
+        <p>You have been matched for a coffee chat based on your shared interests.</p>
+        <p>Reply all to this email to figure out a time that works for everyone to hop on a quick call and get to know each other.</p>
+        <p>Enjoy your chat!</p>
+        <p style="font-size: 12px; color: #666; margin-top: 30px;">- The Peercuit Team</p>
+      </div>
+    `;
+    const template = await getSetting<{ subject: string, body: string }>('coffee_chat_email_template', {
+      subject: 'Your Peercuit Coffee Chat Match!',
+      body: defaultEmailBody
+    });
+
     // 4. Send emails
     let groupsMatched = 0;
     for (const group of groups) {
@@ -43,16 +60,8 @@ export async function POST(req: Request) {
           await resend.emails.send({
             from: 'Peercuit Coffee Chat <coffee@peercuit.com>',
             to: emails,
-            subject: `Your Peercuit Coffee Chat Match!`,
-            html: `
-              <div style="font-family: sans-serif; padding: 20px; color: #333; background-color: #edf8f0; border-radius: 8px;">
-                <h2 style="color: #0d623d;">Hello everyone!</h2>
-                <p>You have been matched for a coffee chat based on your shared interests.</p>
-                <p>Reply all to this email to figure out a time that works for everyone to hop on a quick call and get to know each other.</p>
-                <p>Enjoy your chat!</p>
-                <p style="font-size: 12px; color: #666; margin-top: 30px;">- The Peercuit Team</p>
-              </div>
-            `,
+            subject: template.subject,
+            html: template.body,
           });
         } catch (e) {
           console.error('Failed to send coffee chat email', e);
@@ -70,6 +79,9 @@ export async function POST(req: Request) {
     if (groupsMatched === 0) {
       return NextResponse.json({ message: 'Could not form any full groups of 3+ people.' });
     }
+
+    // 6. Audit Log
+    await logAdminAction(user.email!, 'Triggered Automated Coffee Chats', { groupsMatched });
 
     return NextResponse.json({ success: true, groupsMatched });
   } catch (error: any) {

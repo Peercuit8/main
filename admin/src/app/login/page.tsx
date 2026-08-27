@@ -1,5 +1,6 @@
 import { login } from './actions'
 import { LockKeyhole } from 'lucide-react'
+import { SubmitButton } from './SubmitButton'
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ message: string }> }) {
   const { message } = await searchParams;
@@ -12,6 +13,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <div className="absolute w-full h-full radial-glow-green pointer-events-none" />
 
       <form 
+        action={login}
         className="z-10 flex flex-col gap-6 w-[400px] glass-card glass-card-hover p-10 rounded-2xl relative"
       >
         <div className="flex flex-col items-center mb-4">
@@ -52,12 +54,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           />
         </div>
 
-        <button 
-          formAction={login}
-          className="bg-brand-green-primary text-white p-3 rounded-lg hover:bg-brand-green-accent transition-colors font-medium shadow-md shadow-brand-green-primary/20 mt-2"
-        >
-          Sign In
-        </button>
+        <SubmitButton />
       </form>
     </div>
   )

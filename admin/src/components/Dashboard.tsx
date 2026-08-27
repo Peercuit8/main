@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Users, Mail, CheckCircle, XCircle, LogOut, Clock, Loader2, RefreshCw } from 'lucide-react'
+import { Users, Mail, CheckCircle, XCircle, Clock, Loader2, RefreshCw } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -56,14 +56,39 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
     }
   }
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push('/login')
-  }
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'accepted' | 'rejected'>('all')
 
   const pendingCount = responses.filter(r => r.status === 'pending').length
   const acceptedCount = responses.filter(r => r.status === 'accepted').length
   const rejectedCount = responses.filter(r => r.status === 'rejected').length
+
+  const filteredResponses = responses.filter(r => {
+    const matchesSearch = r.email.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesStatus = statusFilter === 'all' || r.status === statusFilter
+    return matchesSearch && matchesStatus
+  })
+
+  const exportCSV = () => {
+    const headers = ['ID', 'Email', 'Status', 'Matched', 'Interests', 'Created At']
+    const rows = filteredResponses.map(r => [
+      r.id,
+      r.email,
+      r.status,
+      r.matched ? 'Yes' : 'No',
+      (r.interests || []).join('; '),
+      new Date(r.created_at).toLocaleString()
+    ])
+    
+    const csvContent = [headers, ...rows].map(e => e.map(f => `"${f}"`).join(',')).join('\n')
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.setAttribute('download', 'peercuit_responses.csv')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 
   return (
     <div className="min-h-screen bg-primary relative overflow-hidden pb-12">
@@ -71,29 +96,7 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
       <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern pointer-events-none" />
       <div className="absolute w-full h-full radial-glow-emerald pointer-events-none" />
 
-      {/* Navbar */}
-      <nav className="glass-card sticky top-0 z-50 border-b border-border-card mb-8">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-brand-green-primary flex items-center justify-center text-white font-bold">
-              P
-            </div>
-            <h1 className="font-bold text-xl tracking-tight text-text-primary">Peercuit Admin</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-text-secondary bg-brand-badge-bg px-3 py-1.5 rounded-full border border-brand-badge-border">
-              {userEmail}
-            </span>
-            <button 
-              onClick={handleLogout}
-              className="text-text-muted hover:text-red-500 transition-colors flex items-center gap-1 text-sm font-medium"
-            >
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </button>
-          </div>
-        </div>
-      </nav>
+
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="flex items-center justify-between mb-8">
@@ -139,6 +142,35 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
           </div>
         </div>
 
+        {/* Controls */}
+        <div className="flex flex-col md:flex-row gap-4 mb-4 items-center justify-between">
+          <div className="flex flex-1 w-full gap-4">
+            <input 
+              type="text" 
+              placeholder="Search by email..." 
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="border border-border-card bg-bg-card text-text-primary p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green-primary w-full max-w-sm"
+            />
+            <select 
+              value={statusFilter} 
+              onChange={e => setStatusFilter(e.target.value as any)}
+              className="border border-border-card bg-bg-card text-text-primary p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green-primary"
+            >
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="accepted">Accepted</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <button 
+            onClick={exportCSV}
+            className="bg-bg-surface border border-border-card text-text-secondary hover:text-text-primary hover:bg-bg-card px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          >
+            Export CSV
+          </button>
+        </div>
+
         {/* Table */}
         <div className="glass-card rounded-2xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
@@ -153,7 +185,7 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-card">
-                {responses.map(res => (
+                {filteredResponses.map(res => (
                   <tr key={res.id} className="hover:bg-bg-surface/50 transition-colors group">
                     <td className="p-5 font-medium text-text-primary">{res.email}</td>
                     <td className="p-5 text-text-muted text-sm">{new Date(res.created_at).toLocaleDateString()}</td>
@@ -203,7 +235,7 @@ export default function Dashboard({ initialResponses, userEmail }: { initialResp
                     </td>
                   </tr>
                 ))}
-                {responses.length === 0 && (
+                {filteredResponses.length === 0 && (
                   <tr>
                     <td colSpan={5} className="p-8 text-center text-text-muted">
                       No responses found.
