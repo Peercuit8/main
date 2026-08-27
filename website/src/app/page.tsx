@@ -19,14 +19,20 @@ export const revalidate = 0;
 export default async function Home() {
   let applicationsOpen = true;
   let launchName = 'Cohort 4'; // Default fallback
+  let scheduledStartDate: string | null = null;
+  let scheduledEndDate: string | null = null;
 
   if (supabase) {
     try {
       const { data, error } = await supabase.from('settings').select('value').eq('key', 'applications_open').single();
       if (!error && data && data.value !== undefined) {
         applicationsOpen = isApplicationsOpen(data.value);
-        if (typeof data.value === 'object' && data.value.launchName) {
-          launchName = data.value.launchName;
+        if (typeof data.value === 'object') {
+          if (data.value.launchName) launchName = data.value.launchName;
+          if (data.value.type === 'scheduled') {
+            scheduledStartDate = data.value.startDate || null;
+            scheduledEndDate = data.value.endDate || null;
+          }
         }
         if (applicationsOpen && typeof data.value === 'object' && data.value.capacityLimit) {
           const { count, error: countError } = await supabase
@@ -49,7 +55,7 @@ export default async function Home() {
 
       <main className="flex-grow">
         {/* 1. Hero Section */}
-        <Hero applicationsOpen={applicationsOpen} launchName={launchName} />
+        <Hero applicationsOpen={applicationsOpen} launchName={launchName} startDate={scheduledStartDate} endDate={scheduledEndDate} />
 
         {/* 2. What You Get (Value Props) */}
         <ValueProps />

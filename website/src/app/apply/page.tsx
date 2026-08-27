@@ -4,6 +4,7 @@ import { ArrowLeft, ShieldCheck, Zap, Users } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ApplicationForm } from "@/components/ApplicationForm";
+import { Countdown } from "@/components/Countdown";
 
 export const metadata = {
   title: "Apply to Join Peercuit | Student Builder Community",
@@ -19,12 +20,18 @@ import { isApplicationsOpen } from "@/lib/applications";
 
 export default async function ApplyPage() {
   let applicationsOpen = true;
+  let scheduledStartDate: string | null = null;
+  let scheduledEndDate: string | null = null;
 
   if (supabase) {
     try {
       const { data, error } = await supabase.from('settings').select('value').eq('key', 'applications_open').single();
       if (!error && data && data.value !== undefined) {
         applicationsOpen = isApplicationsOpen(data.value);
+        if (typeof data.value === 'object' && data.value.type === 'scheduled') {
+          scheduledStartDate = data.value.startDate || null;
+          scheduledEndDate = data.value.endDate || null;
+        }
         if (applicationsOpen && typeof data.value === 'object' && data.value.capacityLimit) {
           const { count, error: countError } = await supabase
             .from('applications')
@@ -52,7 +59,7 @@ export default async function ApplyPage() {
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Back link */}
-          <div className="mb-6">
+          <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <Link
               href="/"
               className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-[#0d623d] dark:hover:text-emerald-400 transition-colors"
@@ -60,6 +67,12 @@ export default async function ApplyPage() {
               <ArrowLeft className="w-3.5 h-3.5" />
               Back to Home
             </Link>
+            
+            {(scheduledStartDate || scheduledEndDate) && (
+              <div>
+                <Countdown startDate={scheduledStartDate} endDate={scheduledEndDate} />
+              </div>
+            )}
           </div>
 
           {/* Form Container */}

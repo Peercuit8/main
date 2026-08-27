@@ -13,8 +13,9 @@ import {
   Code2,
   Users,
 } from "lucide-react";
+import { Countdown } from "./Countdown";
 
-export function Hero({ applicationsOpen = true, launchName = 'Cohort 4' }: { applicationsOpen?: boolean, launchName?: string }) {
+export function Hero({ applicationsOpen = true, launchName = 'Cohort 4', startDate, endDate }: { applicationsOpen?: boolean, launchName?: string, startDate?: string | null, endDate?: string | null }) {
   return (
     <section className="relative pt-24 pb-14 sm:pt-32 sm:pb-20 md:pt-36 md:pb-24 overflow-hidden">
       {/* Background glowing ambient lighting */}
@@ -47,6 +48,17 @@ export function Hero({ applicationsOpen = true, launchName = 'Cohort 4' }: { app
               {applicationsOpen ? `Applications Open for ${launchName}` : 'Applications currently closed'}
             </span>
           </motion.div>
+
+          {/* Countdown */}
+          {(startDate || endDate) && (
+            <motion.div
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.05 }}
+            >
+              <Countdown startDate={startDate} endDate={endDate} />
+            </motion.div>
+          )}
 
           {/* Singular Bold Headline */}
           <h1 className="text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white max-w-4xl mx-auto leading-[1.1] mb-5 sm:mb-6">
