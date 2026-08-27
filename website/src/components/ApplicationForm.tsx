@@ -29,7 +29,7 @@ const LINK_PLACEHOLDERS = [
   "https://read.cv/yourname",
 ];
 
-export function ApplicationForm() {
+export function ApplicationForm({ isOpen = true }: { isOpen?: boolean }) {
   const { user, signInWithGoogle } = useAuth();
 
   const [formData, setFormData] = useState<ApplicationInput>({
@@ -125,6 +125,7 @@ export function ApplicationForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isOpen) return;
     setSubmitError(null);
     setErrors({});
     setIsSubmitting(true);
@@ -227,8 +228,9 @@ export function ApplicationForm() {
         {!user && (
           <button
             type="button"
+            disabled={!isOpen}
             onClick={handleGoogleAutofill}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-[#0c1610] hover:bg-slate-200 dark:hover:bg-[#122218] border border-slate-300 dark:border-emerald-500/20 rounded-xl transition-all shadow-xs cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-[#0c1610] hover:bg-slate-200 dark:hover:bg-[#122218] border border-slate-300 dark:border-emerald-500/20 rounded-xl transition-all shadow-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
@@ -273,6 +275,18 @@ export function ApplicationForm() {
         </div>
       )}
 
+      {!isOpen && (
+        <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-sm flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-semibold">Applications are currently closed</p>
+            <p className="text-sm mt-0.5">
+              Applications open on the first week of every month. You can view the form below to prepare your answers!
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Application Form */}
       <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6" noValidate>
         {/* Section 1: Basic Info */}
@@ -296,10 +310,11 @@ export function ApplicationForm() {
                 id="fullName"
                 name="fullName"
                 required
+                disabled={!isOpen}
                 value={formData.fullName}
                 onChange={handleChange}
                 placeholder="e.g. Alex Rivera"
-                className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition-all ${
+                className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed ${
                   errors.fullName
                     ? "border-rose-500 focus:border-rose-500 ring-1 ring-rose-500"
                     : "border-slate-300 dark:border-emerald-500/20 focus:border-[#0d623d] dark:focus:border-emerald-400 focus:ring-1 focus:ring-[#0d623d] dark:focus:ring-emerald-400"
@@ -323,10 +338,11 @@ export function ApplicationForm() {
                 id="email"
                 name="email"
                 required
+                disabled={!isOpen}
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="alex@example.com (or school email)"
-                className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition-all ${
+                className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed ${
                   errors.email
                     ? "border-rose-500 focus:border-rose-500 ring-1 ring-rose-500"
                     : "border-slate-300 dark:border-emerald-500/20 focus:border-[#0d623d] dark:focus:border-emerald-400 focus:ring-1 focus:ring-[#0d623d] dark:focus:ring-emerald-400"
@@ -352,10 +368,11 @@ export function ApplicationForm() {
                 id="school"
                 name="school"
                 required
+                disabled={!isOpen}
                 value={formData.school}
                 onChange={handleChange}
                 placeholder="e.g. Stanford University or Lincoln High School"
-                className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition-all ${
+                className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed ${
                   errors.school
                     ? "border-rose-500 focus:border-rose-500 ring-1 ring-rose-500"
                     : "border-slate-300 dark:border-emerald-500/20 focus:border-[#0d623d] dark:focus:border-emerald-400 focus:ring-1 focus:ring-[#0d623d] dark:focus:ring-emerald-400"
@@ -378,9 +395,10 @@ export function ApplicationForm() {
                 id="grade"
                 name="grade"
                 required
+                disabled={!isOpen}
                 value={formData.grade}
                 onChange={handleChange}
-                className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white focus:outline-none transition-all cursor-pointer ${
+                className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white focus:outline-none transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${
                   errors.grade
                     ? "border-rose-500 focus:border-rose-500 ring-1 ring-rose-500"
                     : "border-slate-300 dark:border-emerald-500/20 focus:border-[#0d623d] dark:focus:border-emerald-400 focus:ring-1 focus:ring-[#0d623d] dark:focus:ring-emerald-400"
@@ -415,10 +433,11 @@ export function ApplicationForm() {
                 id="location"
                 name="location"
                 required
+                disabled={!isOpen}
                 value={formData.location}
                 onChange={handleChange}
                 placeholder="e.g. Mumbai, India or Austin, USA"
-                className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition-all ${
+                className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed ${
                   errors.location
                     ? "border-rose-500 focus:border-rose-500 ring-1 ring-rose-500"
                     : "border-slate-300 dark:border-emerald-500/20 focus:border-[#0d623d] dark:focus:border-emerald-400 focus:ring-1 focus:ring-[#0d623d] dark:focus:ring-emerald-400"
@@ -441,10 +460,11 @@ export function ApplicationForm() {
                 type="text"
                 id="age"
                 name="age"
+                disabled={!isOpen}
                 value={formData.age}
                 onChange={handleChange}
                 placeholder="e.g. 18"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border border-slate-300 dark:border-emerald-500/20 text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-[#0d623d] dark:focus:border-emerald-400 focus:ring-1 focus:ring-[#0d623d] dark:focus:ring-emerald-400 focus:outline-none transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border border-slate-300 dark:border-emerald-500/20 text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-[#0d623d] dark:focus:border-emerald-400 focus:ring-1 focus:ring-[#0d623d] dark:focus:ring-emerald-400 focus:outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               />
             </div>
           </div>
@@ -474,11 +494,12 @@ export function ApplicationForm() {
               id="currentWork"
               name="currentWork"
               required
+              disabled={!isOpen}
               rows={3}
               value={formData.currentWork}
               onChange={handleChange}
               placeholder="e.g. Building an AI chrome extension for summarizing lecture slides, learning Rust, designing mobile apps in Figma, or prepping for our first hackathon..."
-              className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition-all resize-y ${
+              className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition-all resize-y disabled:opacity-60 disabled:cursor-not-allowed ${
                 errors.currentWork
                   ? "border-rose-500 focus:border-rose-500 ring-1 ring-rose-500"
                   : "border-slate-300 dark:border-emerald-500/20 focus:border-[#0d623d] dark:focus:border-emerald-400 focus:ring-1 focus:ring-[#0d623d] dark:focus:ring-emerald-400"
@@ -506,11 +527,12 @@ export function ApplicationForm() {
               id="whyJoin"
               name="whyJoin"
               required
+              disabled={!isOpen}
               rows={3}
               value={formData.whyJoin}
               onChange={handleChange}
               placeholder="e.g. Want honest feedback on my code, looking for co-builders to enter hackathons with, or tired of building alone in my dorm..."
-              className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition-all resize-y ${
+              className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition-all resize-y disabled:opacity-60 disabled:cursor-not-allowed ${
                 errors.whyJoin
                   ? "border-rose-500 focus:border-rose-500 ring-1 ring-rose-500"
                   : "border-slate-300 dark:border-emerald-500/20 focus:border-[#0d623d] dark:focus:border-emerald-400 focus:ring-1 focus:ring-[#0d623d] dark:focus:ring-emerald-400"
@@ -541,9 +563,10 @@ export function ApplicationForm() {
               id="referral"
               name="referral"
               required
+              disabled={!isOpen}
               value={formData.referral}
               onChange={handleChange}
-              className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white focus:outline-none transition-all cursor-pointer ${
+              className={`w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border text-base sm:text-sm text-slate-900 dark:text-white focus:outline-none transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${
                 errors.referral
                   ? "border-rose-500 focus:border-rose-500 ring-1 ring-rose-500"
                   : "border-slate-300 dark:border-emerald-500/20 focus:border-[#0d623d] dark:focus:border-emerald-400 focus:ring-1 focus:ring-[#0d623d] dark:focus:ring-emerald-400"
@@ -583,10 +606,11 @@ export function ApplicationForm() {
                     </div>
                     <input
                       type="text"
+                      disabled={!isOpen}
                       value={link}
                       onChange={(e) => handleLinkChange(idx, e.target.value)}
                       placeholder={LINK_PLACEHOLDERS[idx % LINK_PLACEHOLDERS.length]}
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border border-slate-300 dark:border-emerald-500/20 text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-[#0d623d] dark:focus:border-emerald-400 focus:ring-1 focus:ring-[#0d623d] dark:focus:ring-emerald-400 focus:outline-none transition-all"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#09120d]/90 border border-slate-300 dark:border-emerald-500/20 text-base sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-[#0d623d] dark:focus:border-emerald-400 focus:ring-1 focus:ring-[#0d623d] dark:focus:ring-emerald-400 focus:outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                     />
                   </div>
 
@@ -594,8 +618,9 @@ export function ApplicationForm() {
                   {links.length > 1 && (
                     <button
                       type="button"
+                      disabled={!isOpen}
                       onClick={() => handleRemoveLink(idx)}
-                      className="p-2.5 rounded-xl text-slate-400 hover:text-rose-500 bg-slate-100 dark:bg-[#0c1610] hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-slate-200 dark:border-emerald-500/20 transition-colors cursor-pointer shrink-0"
+                      className="p-2.5 rounded-xl text-slate-400 hover:text-rose-500 bg-slate-100 dark:bg-[#0c1610] hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-slate-200 dark:border-emerald-500/20 transition-colors cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Remove link"
                       aria-label="Remove link"
                     >
@@ -610,8 +635,9 @@ export function ApplicationForm() {
             {links.length < 6 && (
               <button
                 type="button"
+                disabled={!isOpen}
                 onClick={handleAddLink}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0d623d] dark:text-emerald-400 hover:text-[#094d2f] dark:hover:text-emerald-300 pt-1 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0d623d] dark:text-emerald-400 hover:text-[#094d2f] dark:hover:text-emerald-300 pt-1 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add another link</span>
@@ -628,13 +654,18 @@ export function ApplicationForm() {
         <div className="pt-4 sm:pt-6">
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isOpen}
             className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 text-base font-bold text-white bg-[#0d623d] hover:bg-[#094d2f] dark:bg-gradient-to-r dark:from-emerald-600 dark:via-emerald-500 dark:to-teal-600 dark:hover:from-emerald-500 dark:hover:to-teal-500 rounded-xl shadow-lg shadow-emerald-900/15 dark:shadow-emerald-600/25 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
           >
             {isSubmitting ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
                 Submitting Application...
+              </>
+            ) : !isOpen ? (
+              <>
+                <AlertCircle className="w-4 h-4" />
+                Applications open first week of every month
               </>
             ) : (
               <>
@@ -643,9 +674,11 @@ export function ApplicationForm() {
               </>
             )}
           </button>
-          <p className="text-center text-xs text-slate-500 dark:text-slate-400 mt-3">
-            Reviewed within 24-48 hours by student builders. No spam, ever.
-          </p>
+          {isOpen && (
+            <p className="text-center text-xs text-slate-500 dark:text-slate-400 mt-3">
+              Reviewed within 24-48 hours by student builders. No spam, ever.
+            </p>
+          )}
         </div>
       </form>
     </div>

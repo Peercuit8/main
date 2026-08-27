@@ -14,7 +14,7 @@ import {
   Users,
 } from "lucide-react";
 
-export function Hero() {
+export function Hero({ applicationsOpen = true }: { applicationsOpen?: boolean }) {
   return (
     <section className="relative pt-24 pb-14 sm:pt-32 sm:pb-20 md:pt-36 md:pb-24 overflow-hidden">
       {/* Background glowing ambient lighting */}
@@ -33,15 +33,19 @@ export function Hero() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-white/90 dark:bg-emerald-950/80 border border-emerald-300/80 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs sm:text-sm font-medium mb-5 sm:mb-6 shadow-md max-w-[95%] truncate"
+            className={`inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full ${applicationsOpen ? 'bg-white/90 dark:bg-emerald-950/80 border-emerald-300/80 dark:border-emerald-500/30' : 'bg-red-50 dark:bg-red-950/80 border-red-300 dark:border-red-500/30'} border text-xs sm:text-sm font-medium mb-5 sm:mb-6 shadow-md max-w-[95%] truncate`}
           >
-            <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5 shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 duration-1000" />
-              <span className="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 bg-[#0d623d] dark:bg-emerald-400" />
+            {applicationsOpen && (
+              <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 duration-1000" />
+                <span className="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 bg-[#0d623d] dark:bg-emerald-400" />
+              </span>
+            )}
+            <span className={`font-bold ${applicationsOpen ? 'text-slate-900 dark:text-white' : 'text-red-900 dark:text-red-200'} truncate`}>Curated Student Network</span>
+            <span className={applicationsOpen ? "text-emerald-600 dark:text-emerald-400/50" : "text-red-400"}>•</span>
+            <span className={`font-semibold truncate ${applicationsOpen ? 'text-[#0d623d] dark:text-emerald-300' : 'text-red-700 dark:text-red-400'}`}>
+              {applicationsOpen ? 'Applications Open' : 'Applications currently closed'}
             </span>
-            <span className="font-bold text-slate-900 dark:text-white truncate">Curated Student Network</span>
-            <span className="text-emerald-600 dark:text-emerald-400/50">•</span>
-            <span className="text-[#0d623d] dark:text-emerald-300 font-semibold truncate">Applications Open</span>
           </motion.div>
 
           {/* Singular Bold Headline */}
@@ -83,15 +87,25 @@ export function Hero() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center w-full mb-12 sm:mb-16"
+            className="flex flex-col sm:flex-row items-center justify-center w-full mb-12 sm:mb-16 gap-3"
           >
-            <Link
-              href="/apply"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-bold text-white bg-[#0d623d] hover:bg-[#094d2f] dark:bg-gradient-to-r dark:from-emerald-600 dark:via-emerald-500 dark:to-teal-600 dark:hover:from-emerald-500 dark:hover:to-teal-500 rounded-xl shadow-xl shadow-emerald-900/20 dark:shadow-emerald-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Apply to Join Peercuit
-              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Link>
+            {applicationsOpen ? (
+              <Link
+                href="/apply"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-bold text-white bg-[#0d623d] hover:bg-[#094d2f] dark:bg-gradient-to-r dark:from-emerald-600 dark:via-emerald-500 dark:to-teal-600 dark:hover:from-emerald-500 dark:hover:to-teal-500 rounded-xl shadow-xl shadow-emerald-900/20 dark:shadow-emerald-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Apply to Join Peercuit
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+              </Link>
+            ) : (
+              <Link
+                href="/apply"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-bold text-amber-900 bg-amber-100 dark:bg-amber-500/20 dark:text-amber-300 border border-amber-300 dark:border-amber-500/30 rounded-xl transition-all"
+              >
+                Applications open 1st week of month
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+              </Link>
+            )}
           </motion.div>
 
 

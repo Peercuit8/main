@@ -27,7 +27,7 @@ export default async function Home() {
 
       <main className="flex-grow">
         {/* 1. Hero Section */}
-        <Hero />
+        <Hero applicationsOpen={applicationsOpen} />
 
         {/* 2. What You Get (Value Props) */}
         <ValueProps />
@@ -74,13 +74,13 @@ export default async function Home() {
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                 ) : (
-                  <div
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-bold text-white rounded-xl shadow-xl transition-all bg-gray-400 cursor-not-allowed"
-                    aria-disabled="true"
+                  <Link
+                    href="/apply"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-bold text-amber-900 bg-amber-100 dark:bg-amber-500/20 dark:text-amber-300 border border-amber-300 dark:border-amber-500/30 rounded-xl transition-all"
                   >
-                    Applications Closed
+                    Applications open 1st week of month
                     <ArrowRight className="w-5 h-5" />
-                  </div>
+                  </Link>
                 )}
                 <Link
                   href="#faq"

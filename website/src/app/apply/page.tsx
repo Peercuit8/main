@@ -45,16 +45,7 @@ export default async function ApplyPage() {
           </div>
 
           {/* Form Container */}
-          {applicationsOpen ? (
-            <ApplicationForm />
-          ) : (
-            <div className="p-12 text-center glass-card border border-emerald-300/80 dark:border-emerald-500/[0.15] rounded-3xl shadow-xl">
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Applications are Closed</h2>
-              <p className="text-slate-600 dark:text-slate-400">
-                We are currently not accepting new applications. Please check back later or join our waitlist if available.
-              </p>
-            </div>
-          )}
+          <ApplicationForm isOpen={applicationsOpen} />
 
           {/* Trust Highlights Below Form */}
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center sm:text-left">
