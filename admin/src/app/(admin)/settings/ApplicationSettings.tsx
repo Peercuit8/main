@@ -17,13 +17,35 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
   const [isPending, startTransition] = useTransition();
 
   const currentType = typeof setting === 'object' ? setting.type : (setting ? 'open' : 'closed');
-  const startDate = typeof setting === 'object' && setting.startDate ? setting.startDate.substring(0, 16) : '';
-  const endDate = typeof setting === 'object' && setting.endDate ? setting.endDate.substring(0, 16) : '';
+  
+  const getLocalDatetimeString = (isoString?: string) => {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return '';
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
+  const startDate = typeof setting === 'object' ? getLocalDatetimeString(setting.startDate) : '';
+  const endDate = typeof setting === 'object' ? getLocalDatetimeString(setting.endDate) : '';
 
   const handleSave = (newSetting: ApplicationSettingValue) => {
-    setSetting(newSetting);
+    // Preserve existing keys like capacityLimit or launchName
+    let finalSetting = newSetting;
+    if (typeof setting === 'object' && typeof newSetting === 'object') {
+      finalSetting = { ...setting, ...newSetting };
+    } else if (typeof setting === 'object' && typeof newSetting === 'boolean') {
+      // If switching to boolean but we have extra config, we might want to keep it as an object
+      finalSetting = { ...setting, type: newSetting ? 'open' : 'closed' };
+    }
+
+    setSetting(finalSetting);
     startTransition(async () => {
-      const res = await setApplicationsSetting(newSetting);
+      const res = await setApplicationsSetting(finalSetting);
       if (res.error) {
         alert(res.error);
         setSetting(setting); // revert on error
@@ -61,7 +83,11 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
             type="radio"
             name="app_status"
             checked={currentType === 'scheduled'}
-            onChange={() => handleSave({ type: 'scheduled', startDate, endDate })}
+            onChange={() => {
+               // When switching to scheduled, preserve start/end if they exist
+               const base = typeof setting === 'object' ? setting : ({} as Record<string, any>);
+               handleSave({ type: 'scheduled', startDate: base.startDate, endDate: base.endDate });
+            }}
             className="text-brand-green-primary focus:ring-brand-green-primary"
             disabled={isPending}
           />
@@ -76,7 +102,7 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
             <input
               type="datetime-local"
               value={startDate}
-              onChange={(e) => handleSave({ type: 'scheduled', startDate: e.target.value ? new Date(e.target.value).toISOString() : undefined, endDate: typeof setting === 'object' ? setting.endDate : undefined })}
+              onChange={(e) => handleSave({ type: 'scheduled', startDate: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
               disabled={isPending}
               className="w-full px-3 py-2 rounded-md bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-brand-green-primary"
             />
@@ -86,7 +112,7 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
             <input
               type="datetime-local"
               value={endDate}
-              onChange={(e) => handleSave({ type: 'scheduled', startDate: typeof setting === 'object' ? setting.startDate : undefined, endDate: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
+              onChange={(e) => handleSave({ type: 'scheduled', endDate: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
               disabled={isPending}
               className="w-full px-3 py-2 rounded-md bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-brand-green-primary"
             />
