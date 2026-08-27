@@ -33,22 +33,24 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
   const startDate = typeof setting === 'object' ? getLocalDatetimeString(setting.startDate) : '';
   const endDate = typeof setting === 'object' ? getLocalDatetimeString(setting.endDate) : '';
 
-  const handleSave = (newSetting: ApplicationSettingValue) => {
-    // Preserve existing keys like capacityLimit or launchName
+  const handleChange = (newSetting: ApplicationSettingValue) => {
     let finalSetting = newSetting;
     if (typeof setting === 'object' && typeof newSetting === 'object') {
       finalSetting = { ...setting, ...newSetting };
     } else if (typeof setting === 'object' && typeof newSetting === 'boolean') {
-      // If switching to boolean but we have extra config, we might want to keep it as an object
       finalSetting = { ...setting, type: newSetting ? 'open' : 'closed' };
     }
-
     setSetting(finalSetting);
+  };
+
+  const handleSave = () => {
     startTransition(async () => {
-      const res = await setApplicationsSetting(finalSetting);
+      const res = await setApplicationsSetting(setting);
       if (res.error) {
         alert(res.error);
-        setSetting(setting); // revert on error
+        setSetting(initialSetting); // revert on error
+      } else {
+        alert('Settings saved successfully!');
       }
     });
   };
@@ -61,7 +63,7 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
             type="radio"
             name="app_status"
             checked={currentType === 'open'}
-            onChange={() => handleSave({ type: 'open' })}
+            onChange={() => handleChange({ type: 'open' })}
             className="text-brand-green-primary focus:ring-brand-green-primary"
             disabled={isPending}
           />
@@ -72,7 +74,7 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
             type="radio"
             name="app_status"
             checked={currentType === 'closed'}
-            onChange={() => handleSave({ type: 'closed' })}
+            onChange={() => handleChange({ type: 'closed' })}
             className="text-brand-green-primary focus:ring-brand-green-primary"
             disabled={isPending}
           />
@@ -84,9 +86,8 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
             name="app_status"
             checked={currentType === 'scheduled'}
             onChange={() => {
-               // When switching to scheduled, preserve start/end if they exist
                const base = typeof setting === 'object' ? setting : ({} as Record<string, any>);
-               handleSave({ type: 'scheduled', startDate: base.startDate, endDate: base.endDate });
+               handleChange({ type: 'scheduled', startDate: base.startDate, endDate: base.endDate });
             }}
             className="text-brand-green-primary focus:ring-brand-green-primary"
             disabled={isPending}
@@ -102,7 +103,7 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
             <input
               type="datetime-local"
               value={startDate}
-              onChange={(e) => handleSave({ type: 'scheduled', startDate: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
+              onChange={(e) => handleChange({ type: 'scheduled', startDate: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
               disabled={isPending}
               className="w-full px-3 py-2 rounded-md bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-brand-green-primary"
             />
@@ -112,7 +113,7 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
             <input
               type="datetime-local"
               value={endDate}
-              onChange={(e) => handleSave({ type: 'scheduled', endDate: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
+              onChange={(e) => handleChange({ type: 'scheduled', endDate: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
               disabled={isPending}
               className="w-full px-3 py-2 rounded-md bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-brand-green-primary"
             />
@@ -130,9 +131,9 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
           onChange={(e) => {
             const val = e.target.value || undefined;
             if (typeof setting === 'object') {
-              handleSave({ ...setting, launchName: val });
+              handleChange({ ...setting, launchName: val });
             } else {
-              handleSave({ type: setting ? 'open' : 'closed', launchName: val });
+              handleChange({ type: setting ? 'open' : 'closed', launchName: val });
             }
           }}
           disabled={isPending}
@@ -149,9 +150,9 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
           onChange={(e) => {
             const val = e.target.value ? parseInt(e.target.value) : undefined;
             if (typeof setting === 'object') {
-              handleSave({ ...setting, capacityLimit: val });
+              handleChange({ ...setting, capacityLimit: val });
             } else {
-              handleSave({ type: setting ? 'open' : 'closed', capacityLimit: val });
+              handleChange({ type: setting ? 'open' : 'closed', capacityLimit: val });
             }
           }}
           disabled={isPending}
@@ -159,11 +160,20 @@ export function ApplicationSettings({ initialSetting }: { initialSetting: Applic
         />
       </div>
       
-      {isPending && (
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <Loader2 className="w-4 h-4 animate-spin" /> Saving...
-        </div>
-      )}
+      <div className="pt-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-end gap-4">
+        {isPending && (
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <Loader2 className="w-4 h-4 animate-spin" /> Saving...
+          </div>
+        )}
+        <button
+          onClick={handleSave}
+          disabled={isPending}
+          className="bg-brand-green-primary hover:bg-brand-green-primary/90 text-white px-6 py-2.5 rounded-lg text-sm font-medium shadow-sm transition-colors disabled:opacity-50"
+        >
+          Save Settings
+        </button>
+      </div>
     </div>
   );
 }
