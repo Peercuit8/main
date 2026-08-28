@@ -77,6 +77,7 @@ const STEPS = [
         { name: "# Introductions", count: "All Cohorts", desc: "Share your stack & current project" },
         { name: "# Feedback & Critique", count: "Daily", desc: "Honest peer review on your WIP" },
         { name: "# Teammate Search", count: "Active", desc: "Find co-builders & hackathon partners" },
+        { name: "# Project Graveyard", count: "Mistake Vault", desc: "Post-mortems & lessons learned" },
         { name: "# Coffee Chats", count: "Every 3-4 days", desc: "1-on-1 matched chats" },
       ],
     },

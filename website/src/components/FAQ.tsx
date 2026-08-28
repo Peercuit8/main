@@ -26,6 +26,10 @@ const FAQS = [
     a: "Once a month, we recognize one standout member based on their activity, the quality of feedback they've given to others, and the work they've shipped. Winners receive an official certificate.",
   },
   {
+    q: "What is the Project Graveyard?",
+    a: "The Graveyard is our transparent mistake and failure archive. When a member's project, hackathon sprint, or technical architecture hits a dead end, they break down what went wrong, why it failed, and the key lessons learned. We treat failure as high-signal learning data so you learn what NOT to do without paying the price yourself.",
+  },
+  {
     q: "I'm in high school — will I fit in with college students?",
     a: "Absolutely! Many of our most active and talented builders are in 9th-12th grade. We have mixed collaboration rooms for hackathons and dedicated sub-groups tailored for high school builders.",
   },

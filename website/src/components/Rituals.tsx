@@ -13,6 +13,7 @@ import {
   BrainCircuit,
   MessageSquare,
   Award,
+  Skull,
 } from "lucide-react";
 
 const RITUALS = [
@@ -85,6 +86,16 @@ const RITUALS = [
       "Randomly announced competitions with a set deadline, culminating in a certificate for winners/top performers. Keeps the community shipping with a bit of friendly pressure.",
     tag: "Competitions",
     icon: Trophy,
+  },
+  {
+    step: "08",
+    day: "Always On",
+    time: "Post-Mortems & Pivots",
+    title: "Project Graveyard",
+    description:
+      "A transparent archive where members dissect failed projects, bad technical bets, and mistakes — so everyone learns what not to do without repeating the same errors.",
+    tag: "Mistake Vault",
+    icon: Skull,
   },
 ];
 

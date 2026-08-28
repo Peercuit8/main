@@ -19,6 +19,7 @@ import {
   BrainCircuit,
   Globe2,
   Coffee,
+  Skull,
 } from "lucide-react";
 
 const BENEFITS = [
@@ -158,6 +159,26 @@ const BENEFITS = [
       event: "Build a Productivity Tool",
       prize: "Winner Certificate & Shoutout",
       status: "Deadline in 48h",
+    },
+  },
+  {
+    step: "08",
+    icon: Skull,
+    badge: "Mistake Vault",
+    title: "Project Graveyard",
+    tagline: "Learn from real mistakes and avoid dead ends.",
+    description:
+      "A transparent archive where members break down failed experiments, bad architectural bets, and rejected ideas. Learn what not to do without having to make the mistakes yourself.",
+    highlights: ["Failure post-mortems", "What NOT to do", "Actionable takeaways"],
+    preview: {
+      type: "graveyard",
+      title: "graveyard/post-mortems.log",
+      badge: "Mistake Vault",
+      lessons: [
+        { mistake: "Building in isolation for 3 months without feedback", solution: "Post weekly WIPs in Peercuit Feedback group" },
+        { mistake: "Over-engineering complex stack before validating need", solution: "Ship 7-day MVP with simple, fast tools" },
+        { mistake: "Adding 15 features before getting 1 real user", solution: "Solve 1 single problem exceptionally well" },
+      ],
     },
   },
 ];
@@ -337,6 +358,38 @@ function PreviewCard({ item }: { item: any }) {
                   >
                     <p className="font-bold text-slate-900 dark:text-white text-xs">{m.label}</p>
                     <p className="text-xs font-black text-[#0d623d] dark:text-emerald-400 mt-0.5">{m.points}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {item.preview.type === "graveyard" && (
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 pb-1">
+                <span className="text-amber-700 dark:text-amber-400 font-bold flex items-center gap-1.5">
+                  <Skull className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                  <span>{item.preview.title}</span>
+                </span>
+                <span className="text-[11px] font-semibold text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-500/15 px-2 py-0.5 rounded-full border border-amber-300 dark:border-amber-500/30">
+                  {item.preview.badge}
+                </span>
+              </div>
+              <div className="space-y-2">
+                {item.preview.lessons?.map((les: any, lIdx: number) => (
+                  <div
+                    key={lIdx}
+                    className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-[#08160d] border border-amber-300/40 dark:border-amber-500/20 text-xs flex items-start gap-2.5"
+                  >
+                    <div className="w-4 h-4 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 mt-0.5 font-bold text-[9px]">
+                      ✕
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-slate-900 dark:text-white text-[11px] sm:text-xs leading-snug">{les.mistake}</p>
+                      <p className="text-[10px] sm:text-[11px] text-emerald-800 dark:text-emerald-400 font-semibold mt-0.5">
+                        ↳ Takeaway: {les.solution}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
