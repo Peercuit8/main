@@ -18,7 +18,7 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
   min-height: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -79,7 +79,7 @@ body {
   background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-sans), sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
   min-height: 100vh;
   transition: background-color 0.2s ease, color 0.2s ease;
 }

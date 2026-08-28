@@ -361,10 +361,11 @@ export function ValueProps() {
       const rect = containerRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       
+      const stickyTop = 80; // corresponds to top-20 (5rem = 80px)
       const totalScrollable = rect.height - windowHeight;
       if (totalScrollable <= 0) return;
 
-      const currentScroll = -rect.top;
+      const currentScroll = stickyTop - rect.top;
       const progress = Math.max(0, Math.min(1, currentScroll / totalScrollable));
 
       const index = Math.min(BENEFITS.length - 1, Math.floor(progress * BENEFITS.length));
@@ -375,6 +376,19 @@ export function ValueProps() {
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleTabClick = (idx: number) => {
+    setActiveIndex(idx);
+    if (containerRef.current && window.innerWidth >= 1024) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const totalScrollable = rect.height - windowHeight;
+      if (totalScrollable > 0) {
+        const targetScroll = window.scrollY + rect.top - 80 + (idx / BENEFITS.length) * totalScrollable + 10;
+        window.scrollTo({ top: targetScroll, behavior: "smooth" });
+      }
+    }
+  };
 
   return (
     <section ref={containerRef} id="benefits" className="relative py-12 lg:py-16 lg:min-h-[320vh]">
@@ -406,7 +420,7 @@ export function ValueProps() {
                   <button
                     key={idx}
                     type="button"
-                    onClick={() => setActiveIndex(idx)}
+                    onClick={() => handleTabClick(idx)}
                     className={`w-full text-left p-4 rounded-2xl transition-all duration-300 cursor-pointer relative overflow-hidden group ${
                       isActive
                         ? "glass-card border-2 border-emerald-500 shadow-xl shadow-emerald-950/15 scale-[1.02]"
